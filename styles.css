@@ -412,6 +412,33 @@ main > section:first-child{border-top:none;padding-top:28px}
 .person .body{padding-top:14px}
 @media (max-width:560px){.person .photolink{width:112px}.person .photo{width:112px}.person .photo .ini{font-size:1.9rem}}
 
+/* ---- schedule day strip ---- */
+.daystrip{margin:22px 0 26px;background:var(--panel);border:1px solid var(--rule);border-radius:14px;padding:44px 18px 14px}
+.segs{position:relative;display:flex;height:34px;border-radius:9px;overflow:visible}
+.seg{appearance:none;border:0;border-right:2px solid var(--panel);background-clip:padding-box;box-sizing:border-box;padding:0;margin:0;height:100%;width:var(--w);flex:none;cursor:pointer;border-radius:4px;
+  transform:scaleX(0);transform-origin:left center;transition:transform .45s cubic-bezier(.3,.7,.2,1) var(--d),filter .15s,box-shadow .15s}
+.segs.grown .seg{transform:scaleX(1)}
+.seg:hover,.seg.on{filter:brightness(1.12) saturate(1.1);box-shadow:0 0 0 2px var(--panel),0 0 0 4px var(--ink);z-index:1}
+.seg.s-inv,.dlegend i.s-inv{background:var(--operate)} .seg.s-con,.dlegend i.s-con{background:var(--adapt)} .seg.s-poster,.dlegend i.s-poster{background:var(--catch-bright)}
+.seg.s-panel,.dlegend i.s-panel{background:var(--ink)} .seg.s-round,.dlegend i.s-round{background:var(--fail)}
+.seg.s-coffee,.seg.s-lunch,.dlegend i.s-coffee{background:#C9D3DD} .seg.s-open,.seg.s-award{background:#8D9BA9}
+.walker{position:absolute;top:-34px;left:0;transform:translateX(-50%);font-size:22px;line-height:1;transition:left .35s cubic-bezier(.3,.7,.2,1);pointer-events:none;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15))}
+.ticks{position:relative;height:20px;margin-top:6px;font:500 .78rem var(--sans);color:var(--ink-2)}
+.ticks span{position:absolute;transform:translateX(-50%)}
+.ticks span:first-child{transform:none} .ticks span:last-child{transform:translateX(-100%)}
+.dlegend{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px 16px;font:400 .86rem var(--sans);color:var(--ink-2)}
+.dlegend li{display:flex;align-items:center;gap:6px}
+.dlegend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.dnow{margin:10px 0 0;font:600 .95rem var(--sans);color:var(--ink);min-height:1.4em}
+/* rows */
+.sched tr{transition:background .15s}
+.sched tr.on td{background:#FFF7E6}
+.sched tr.on td.t{color:var(--ink);font-weight:700}
+.sicon{display:inline-block;width:1.6em;text-align:left}
+.sched tr:focus{outline:2px solid var(--catch-bright);outline-offset:-2px}
+@media (prefers-reduced-motion:reduce){.seg{transition:none;transform:none}.walker{transition:none}}
+@media (max-width:560px){.daystrip{padding:40px 10px 12px}.ticks span:nth-child(even){display:none}}
+
 /* ---- one-page additions ---- */
 .navlinks a[aria-current="true"]{color:var(--ink);font-weight:700;box-shadow:inset 0 -3px 0 var(--catch-bright)}
 h3.sub{font-size:1.5rem;font-weight:800;margin:52px 0 10px}
