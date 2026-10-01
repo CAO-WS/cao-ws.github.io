@@ -1,35 +1,26 @@
 # CAO 2027 workshop website
 
-Website for **The 2nd Workshop on Catch, Adapt, and Operate (CAO): Reliability Under Drift and Beyond**, under preparation for ICLR 2027. Plain HTML and CSS with no build step, so it runs directly on GitHub Pages.
+One-page website for **The 2nd Workshop on Catch, Adapt, and Operate (CAO): Reliability Under Drift and Beyond**, under preparation for ICLR 2027. Plain HTML, CSS, and JavaScript with no build step, so it runs directly on GitHub Pages.
 
-## Pages
+## Files
 
-| File | Page |
+| File | What it is |
 |---|---|
-| `index.html` | Home: overview, key dates, speakers, themes, CAO 2026 |
-| `call-for-papers.html` | Topics, submission types, Lessons from Failures, Failure Clinic, review, LLM policy |
-| `dates.html` | Tentative timeline |
-| `schedule.html` | Tentative workshop-day schedule |
-| `speakers.html` | Invited speakers and panel |
-| `organizers.html` | Organizers and program committee (reviewer list) |
-| `participate.html` | In-person policy, discussion channels, student support, awards, accessibility |
-| `styles.css` | Shared styles for every page |
+| `index.html` | The whole site: about, themes, call for papers, dates, schedule, speakers and panel, organizers and reviewers, taking part, games, CAO 2026 |
+| `styles.css` | Styles |
+| `play.js` | The two games: *Keep it running* and *Spot the shift* |
+| `images/people/` | Headshots (see `PHOTO-FILENAMES.txt` for the exact names) |
+| `.nojekyll` | Tells GitHub Pages to publish the files as they are |
 
-## Adding photos
+## Photos
 
-Put headshots in `images/people/` using the exact file names listed in `images/people/PHOTO-FILENAMES.txt`
-(for example `yoshua-bengio.jpg`). Names must be lowercase and end in `.jpg`, since GitHub Pages is case-sensitive.
-Portrait or square images around 600×750 px work best; faces are framed from the upper part of the image.
-Until a photo is added, the page shows the person's initials, so nothing looks broken.
+Put headshots in `images/people/` with the exact names in `images/people/PHOTO-FILENAMES.txt` (lowercase, `.jpg`). Until a photo exists, the page shows the person's initials.
 
 ## Publishing
 
-Upload everything (keeping the `images/people/` folder) to the root of the repository, then
-**Settings → Pages → Deploy from a branch → `main` / `(root)` → Save**.
+Upload everything to the root of the repository (keep the `images/people/` folder). Pages is already set to deploy from `main` / root.
+If an older multi-page version is in the repo, delete `call-for-papers.html`, `dates.html`, `schedule.html`, `speakers.html`, `organizers.html`, `participate.html`, and `play.html`.
 
-## Editing
+## Contact
 
-- **Menu, banner, footer:** repeated at the top and bottom of each `.html` file; change them in every page.
-- **Contact email:** caoiclr@gmail.com, in each page footer and in the reviewer box.
-- **Reviewers:** the `reviewers` list in the `<script>` at the bottom of `organizers.html`; the count updates automatically.
-- **Speakers, panel, organizers:** the cards in `speakers.html` and `organizers.html`.
+caoiclr@gmail.com appears in the footer, the Taking part section, and the reviewer box. Reviewer sign-up goes to the Google Form linked in the reviewer box.

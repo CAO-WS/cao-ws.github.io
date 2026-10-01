@@ -13,14 +13,12 @@
 </head>
 <body>
 <div class="status" role="note"><div class="wrap"><span><strong>Under preparation for ICLR 2027.</strong> This workshop is being proposed to ICLR 2027. Program, dates, and policies are tentative and will be updated after the acceptance decision.</span></div></div>
-<nav class="top" aria-label="Site">
+<nav class="top" aria-label="Sections">
   <div class="wrap">
-    <a class="brand" href="index.html">CAO <span>2027</span></a>
-    <div class="navlinks"><a href="index.html" aria-current="page">Home</a><a href="call-for-papers.html">Call for papers</a><a href="dates.html">Dates</a><a href="schedule.html">Schedule</a><a href="speakers.html">Speakers</a><a href="organizers.html">Organizers</a><a href="participate.html">Participate</a></div>
+    <a class="brand" href="#top">CAO <span>2027</span></a>
+    <div class="navlinks"><a href="#about">About</a><a href="#cfp">Call for papers</a><a href="#dates">Dates</a><a href="#schedule">Schedule</a><a href="#speakers">Speakers</a><a href="#organizers">Organizers</a><a href="#participate">Participate</a><a href="#play">Play</a></div>
   </div>
 </nav>
-
-<main>
 <header class="hero" id="top">
   <div class="wrap">
     <div class="edition">The 2nd Workshop on</div>
@@ -28,8 +26,8 @@
     <p class="sub">Reliability under drift and beyond: closing the loop for reliable AI after deployment.</p>
     <p class="lede">A one-day, in-person workshop proposed for ICLR 2027, building on the first CAO workshop at ICLR 2026.</p>
     <div class="ctas">
-      <a class="btn primary" href="call-for-papers.html">Read the call for papers</a>
-      <a class="btn" href="dates.html">See tentative dates</a>
+      <a class="btn primary" href="#cfp">Read the call for papers</a>
+      <a class="btn" href="#dates">See tentative dates</a>
     </div>
 
     <figure class="trace">
@@ -68,41 +66,16 @@
       <figcaption>The CAO loop. A deployed system must notice meaningful change, decide how to respond, and keep being watched after it responds, because every intervention can create new failures.</figcaption>
     </figure>
   </div>
-</header><section id="about">
+</header>
+<main>
+<section id="about">
   <div class="wrap">
     <h2>About the workshop</h2>
-    <p class="intro">Machine learning systems increasingly operate in environments that change after deployment. Data distributions evolve, populations shift, and users change their behavior, so distribution shift remains one of the central challenges in reliable machine learning.</p>
-    <p>At the same time, foundation models use tools, retrieve information, maintain context, and make sequences of decisions over long periods. Their failures arise not only from distribution shift but also from hallucination, unreliable tool use, compounding errors, adversarial interactions, and unexpected changes in behavior. A system may hallucinate while conventional metrics stay stable. An agent may make individually reasonable decisions whose errors accumulate. An adaptation method may help under a new distribution while damaging behavior that used to be reliable.</p>
+    <p class="intro">Deployed machine learning systems face data that drift, users who change, and, increasingly, their own unexpected behavior as they use tools and act over long horizons. CAO brings together research on noticing these changes, responding to them, and staying reliable afterwards.</p>
     <p class="question">How can AI systems remain reliable after deployment as their data, environments, and behavior evolve?</p>
-    <div class="cols">
-      <div>
-        <h3>From CAO 2026 to CAO 2027</h3>
-        <p>CAO 2026 asked what happens when the data changes. CAO 2027 asks how we detect and respond when deployed AI changes, or when the world around it changes, and what we learn when that response fails.</p>
-        <p class="muted">The second edition is an expansion of the original agenda, not a departure from it. Distribution shift, drift detection, nonstationarity, test-time adaptation, continual learning, and reliable operation remain core areas.</p>
-      </div>
-      <div>
-        <h3>Two ways the second edition grows</h3>
-        <p><strong>Scientifically</strong>, it extends the Catch, Adapt, Operate loop from distribution shift to failures that arise as deployed systems become more interactive and autonomous.</p>
-        <p><strong>Programmatically</strong>, it treats learning from failure as a first-class scientific goal, through a dedicated Lessons from Failures track and an interactive Failure Clinic.</p>
-      </div>
-    </div>
+    <p>CAO 2027 builds on the first edition at ICLR 2026. Distribution shift stays at its core; the second edition extends the loop to interactive and autonomous systems and makes <a href="#failures">learning from failure</a> a first-class topic.</p>
   </div>
-</section>
-<section id="glance">
-  <div class="wrap">
-    <h2>Key dates</h2>
-    <div class="keydates">
-      <div><b>Around Feb 1, 2027</b><span>Paper submission deadline</span></div>
-      <div><b>By Feb 26, 2027</b><span>Acceptance decisions</span></div>
-      <div><b>ICLR 2027</b><span>Workshop day, in person</span></div>
-    </div>
-    <p class="muted" style="margin-top:12px">All dates are tentative. <a href="dates.html">See the full timeline</a>.</p>
-    <h2 style="margin-top:56px">Invited speakers</h2>
-    <div class="strip"><a href="https://www.andriushchenko.me/" target="_blank" rel="noopener"><div class="photo p-catch "><span class="ini" aria-hidden="true">MA</span><img src="images/people/maksym-andriushchenko.jpg" alt="Photo of Maksym Andriushchenko" onerror="this.remove()"></div>Maksym Andriushchenko<small>ELLIS Institute Tübingen</small></a><a href="https://yoshuabengio.org/" target="_blank" rel="noopener"><div class="photo p-adapt "><span class="ini" aria-hidden="true">YB</span><img src="images/people/yoshua-bengio.jpg" alt="Photo of Yoshua Bengio" onerror="this.remove()"></div>Yoshua Bengio<small>Mila / Université de Montréal</small></a><a href="https://www.sarahooker.org/" target="_blank" rel="noopener"><div class="photo p-operate "><span class="ini" aria-hidden="true">SH</span><img src="images/people/sara-hooker.jpg" alt="Photo of Sara Hooker" onerror="this.remove()"></div>Sara Hooker<small>Adaption</small></a><a href="https://people.eecs.berkeley.edu/~dawnsong/" target="_blank" rel="noopener"><div class="photo p-ink "><span class="ini" aria-hidden="true">DS</span><img src="images/people/dawn-song.jpg" alt="Photo of Dawn Song" onerror="this.remove()"></div>Dawn Song<small>UC Berkeley</small></a><a href="https://dongyoonhan.github.io/" target="_blank" rel="noopener"><div class="photo p-catch "><span class="ini" aria-hidden="true">DH</span><img src="images/people/dongyoon-han.jpg" alt="Photo of Dongyoon Han" onerror="this.remove()"></div>Dongyoon Han<small>NAVER AI Lab</small></a><a href="https://sghalebikesabi.github.io/" target="_blank" rel="noopener"><div class="photo p-adapt "><span class="ini" aria-hidden="true">SG</span><img src="images/people/sahra-ghalebikesabi.jpg" alt="Photo of Sahra Ghalebikesabi" onerror="this.remove()"></div>Sahra Ghalebikesabi<small>OpenAI</small></a></div>
-    <p style="margin-top:16px">Click a name to visit the speaker’s website, or <a href="speakers.html">see all speakers and the panel</a>.</p>
-  </div>
-</section>
-<section id="themes">
+</section><section id="themes">
   <div class="wrap">
     <h2>Research themes</h2>
     <p class="intro">The program is organized around three connected pillars. Detection without response gives limited protection, adaptation without reliable monitoring lacks a trustworthy trigger, and any intervention must itself be monitored again.</p>
@@ -143,17 +116,249 @@
     </div>
     <div class="crosscut"><strong>Lessons from Failures</strong> runs across all three pillars: what failed, why it was hard to catch, and what the community should learn from it.</div>
 
-    <h3>Questions we want to discuss</h3>
-    <ul class="ticks">
-      <li>How can distribution shift and other deployment failures be detected when labels are delayed or unavailable?</li>
-      <li>When should detected change trigger adaptation, and when should a system abstain, escalate, or stay unchanged?</li>
-      <li>How can adaptation remain reliable without introducing forgetting, instability, bias, or new vulnerabilities?</li>
-      <li>How should reliability be evaluated when failures emerge over sequences of interactions rather than single predictions?</li>
-      <li>How can monitoring, adaptation, and robustness be designed jointly rather than as separate components?</li>
-      <li>What can the community learn from failed deployments and unsuccessful interventions?</li>
-    </ul>
+
   </div>
-</section><section id="cao2026">
+</section><section id="cfp"><div class="wrap">
+  <h2>Call for papers</h2>
+  <p class="intro">We invite work on keeping machine learning and AI systems reliable after deployment. The full call opens after the workshop is accepted; details may change with the ICLR 2027 guidelines.</p>
+  <div class="cols">
+    <div>
+      <h3>Topics</h3>
+      <ul class="ticks">
+        <li>Distribution shift, monitoring, and drift detection</li>
+        <li>Test-time, continual, and online adaptation</li>
+        <li>Uncertainty, calibration, and failure detection</li>
+        <li>Robustness and fairness under changing conditions</li>
+        <li>Reliability of foundation models and agents</li>
+        <li>Safe intervention, recovery, and human escalation</li>
+        <li>Evaluation, benchmarks, and auditing for deployment</li>
+      </ul>
+      <p class="muted">Work connecting more than one stage of the loop is especially welcome.</p>
+    </div>
+    <div>
+      <h3>Submission types</h3>
+      <ul class="plain subtypes">
+        <li><b>Research papers</b> in the ICLR format</li>
+        <li><b>Tiny papers</b> of up to 4 pages</li>
+        <li><b>Lessons from Failures papers</b></li>
+      </ul>
+      <p class="muted">Non-archival. Double-blind review on OpenReview. We follow the ICLR 2027 policy on LLM use; tiny papers must be primarily human-written.</p>
+    </div>
+  </div>
+  <div class="failures" id="failures">
+    <h3>Lessons from Failures and the Failure Clinic</h3>
+    <p>Negative results, failed interventions, and deployment postmortems rarely get published. Tell us what failed, why it was hard to catch, what you tried, and what others should learn. Selected cases will be diagnosed live in the Failure Clinic.</p>
+  </div>
+</div></section><section id="dates">
+  <div class="wrap">
+    <h2>Tentative timeline</h2>
+    <p class="intro">All dates are tentative until the workshop is accepted. Times are Anywhere on Earth.</p>
+    <ol class="timeline">
+      <li><span class="when">After workshop acceptance</span><span class="what">Call for papers opens and the OpenReview submission site goes live.</span></li>
+      <li><span class="when">Around February 1, 2027</span><span class="what">Paper submission deadline.</span></li>
+      <li><span class="when">February 2027</span><span class="what">About two weeks of review and discussion.</span></li>
+      <li class="hard"><span class="when">By February 26, 2027</span><span class="what">Acceptance decisions released. Accepted papers become public on OpenReview and are imported into iclr.cc, as required by ICLR.</span></li>
+      <li><span class="when">ICLR 2027 (date and venue to be announced)</span><span class="what">Workshop day, in person.</span></li>
+    </ol>
+  </div>
+</section><section id="schedule">
+  <div class="wrap">
+    <h2>Tentative schedule</h2>
+    <p class="intro">Most of the day is for contributed work and discussion. Speaker order will be announced later.</p>
+    <div class="sched">
+      <table>
+        <caption>Morning</caption>
+        <tbody>
+          <tr><td class="t">08:45–09:00</td><td>Opening remarks</td></tr>
+          <tr class="k-invited"><td class="t">09:00–09:30</td><td>Invited talk 1</td></tr>
+          <tr><td class="t">09:30–09:45</td><td>Contributed talk 1</td></tr>
+          <tr class="k-invited"><td class="t">09:45–10:15</td><td>Invited talk 2</td></tr>
+          <tr class="k-break"><td class="t">10:15–11:00</td><td>Poster session 1 and coffee</td></tr>
+          <tr class="k-invited"><td class="t">11:00–11:30</td><td>Invited talk 3</td></tr>
+          <tr class="k-fail"><td class="t">11:30–12:10</td><td>Failure Clinic</td></tr>
+          <tr><td class="t">12:10–12:25</td><td>Contributed talk 2</td></tr>
+          <tr class="k-break"><td class="t">12:25–13:15</td><td>Lunch</td></tr>
+        </tbody>
+      </table>
+      <table>
+        <caption>Afternoon</caption>
+        <tbody>
+          <tr class="k-invited"><td class="t">13:15–13:45</td><td>Invited talk 4</td></tr>
+          <tr><td class="t">13:45–14:00</td><td>Contributed talk 3</td></tr>
+          <tr><td class="t">14:00–14:15</td><td>Lightning session</td></tr>
+          <tr class="k-break"><td class="t">14:15–15:00</td><td>Poster session 2 and coffee</td></tr>
+          <tr class="k-invited"><td class="t">15:00–15:30</td><td>Invited talk 5</td></tr>
+          <tr class="k-invited"><td class="t">15:30–16:00</td><td>Invited talk 6</td></tr>
+          <tr><td class="t">16:00–16:15</td><td>Contributed talk 4</td></tr>
+          <tr class="k-invited"><td class="t">16:15–17:00</td><td>Panel discussion</td></tr>
+          <tr><td class="t">17:00–17:20</td><td>Open problems and community discussion</td></tr>
+          <tr><td class="t">17:20–17:30</td><td>Best Paper and Best Poster awards; closing</td></tr>
+          <tr class="k-break"><td class="t">After 17:30</td><td>Informal reception or refreshments, subject to funding and ICLR policy</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section><section id="speakers"><div class="wrap">
+  <h2>Invited speakers</h2>
+  <p class="muted">Click a name to visit their website.</p>
+  <div class="people"><article class="person"><a class="photolink" href="https://www.andriushchenko.me/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><div class="photo p-catch "><span class="ini" aria-hidden="true">MA</span><img src="images/people/maksym-andriushchenko.jpg" alt="Photo of Maksym Andriushchenko" onerror="this.remove()"></div></a><div class="body"><h4><a href="https://www.andriushchenko.me/" target="_blank" rel="noopener" title="Open Maksym Andriushchenko’s website">Maksym Andriushchenko</a></h4><div class="aff">ELLIS Institute Tübingen and Max Planck Institute for Intelligent Systems</div><p>AI safety, adversarial robustness, and evaluation of autonomous systems.</p></div></article><article class="person"><a class="photolink" href="https://yoshuabengio.org/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><div class="photo p-adapt "><span class="ini" aria-hidden="true">YB</span><img src="images/people/yoshua-bengio.jpg" alt="Photo of Yoshua Bengio" onerror="this.remove()"></div></a><div class="body"><h4><a href="https://yoshuabengio.org/" target="_blank" rel="noopener" title="Open Yoshua Bengio’s website">Yoshua Bengio</a></h4><div class="aff">Mila / Université de Montréal</div><p>Safe-by-design AI and methods for monitoring and constraining autonomous systems.</p></div></article><article class="person"><a class="photolink" href="https://www.sarahooker.org/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><div class="photo p-operate "><span class="ini" aria-hidden="true">SH</span><img src="images/people/sara-hooker.jpg" alt="Photo of Sara Hooker" onerror="this.remove()"></div></a><div class="body"><h4><a href="https://www.sarahooker.org/" target="_blank" rel="noopener" title="Open Sara Hooker’s website">Sara Hooker</a></h4><div class="aff">Co-founder and CEO, Adaption</div><p>Adaptive AI systems, efficient learning, model evaluation, and continual adaptation.</p></div></article><article class="person"><a class="photolink" href="https://people.eecs.berkeley.edu/~dawnsong/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><div class="photo p-ink "><span class="ini" aria-hidden="true">DS</span><img src="images/people/dawn-song.jpg" alt="Photo of Dawn Song" onerror="this.remove()"></div></a><div class="body"><h4><a href="https://people.eecs.berkeley.edu/~dawnsong/" target="_blank" rel="noopener" title="Open Dawn Song’s website">Dawn Song</a></h4><div class="aff">UC Berkeley</div><p>AI security, trustworthy autonomous systems, and system-level risks.</p></div></article><article class="person"><a class="photolink" href="https://dongyoonhan.github.io/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><div class="photo p-catch "><span class="ini" aria-hidden="true">DH</span><img src="images/people/dongyoon-han.jpg" alt="Photo of Dongyoon Han" onerror="this.remove()"></div></a><div class="body"><h4><a href="https://dongyoonhan.github.io/" target="_blank" rel="noopener" title="Open Dongyoon Han’s website">Dongyoon Han</a></h4><div class="aff">NAVER AI Lab</div><p>Vision and multimodal foundation models, robustness, generalization, and efficient learning.</p></div></article><article class="person"><a class="photolink" href="https://sghalebikesabi.github.io/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><div class="photo p-adapt "><span class="ini" aria-hidden="true">SG</span><img src="images/people/sahra-ghalebikesabi.jpg" alt="Photo of Sahra Ghalebikesabi" onerror="this.remove()"></div></a><div class="body"><h4><a href="https://sghalebikesabi.github.io/" target="_blank" rel="noopener" title="Open Sahra Ghalebikesabi’s website">Sahra Ghalebikesabi</a></h4><div class="aff">OpenAI</div><p>Privacy-preserving AI, deployment-facing evaluation, and reliable language models.</p></div></article></div>
+  <h3 class="sub" id="panel">Panel: The world changed. Should the model?</h3>
+  <p>When conditions change after deployment, is it better to adapt, stay stable, roll back, or hand over to a human? And how do we know an intervention actually helped?</p>
+  <div class="people"><article class="person"><a class="photolink" href="https://ioanaboier.com/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><div class="photo p-adapt "><span class="ini" aria-hidden="true">IB</span><img src="images/people/ioana-boier.jpg" alt="Photo of Ioana Boier" onerror="this.remove()"></div></a><div class="body"><h4><a href="https://ioanaboier.com/" target="_blank" rel="noopener" title="Open Ioana Boier’s website">Ioana Boier</a></h4><div class="aff">NVIDIA</div><p>Generative AI, quantitative finance, and AI deployment in high-stakes financial settings.</p></div></article><article class="person"><a class="photolink" href="https://takashiishida.github.io/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><div class="photo p-operate "><span class="ini" aria-hidden="true">TI</span><img src="images/people/takashi-ishida.jpg" alt="Photo of Takashi Ishida" onerror="this.remove()"></div></a><div class="body"><h4><a href="https://takashiishida.github.io/" target="_blank" rel="noopener" title="Open Takashi Ishida’s website">Takashi Ishida</a></h4><div class="aff">University of Tokyo / RIKEN AIP / Sakana AI</div><p>Learning under uncertainty, model evaluation, alignment, and safety.</p></div></article><article class="person"><a class="photolink" href="https://www.linkedin.com/in/ellawilson123" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><div class="photo p-ink "><span class="ini" aria-hidden="true">EW</span><img src="images/people/ella-wilson.jpg" alt="Photo of Ella Wilson" onerror="this.remove()"></div></a><div class="body"><h4><a href="https://www.linkedin.com/in/ellawilson123" target="_blank" rel="noopener" title="Open Ella Wilson’s website">Ella Wilson</a></h4><div class="aff">RBC Borealis</div><p>AI product development and deployment for user-facing financial applications; product governance, customer impact, and deployment risk.</p></div></article><article class="person"><a class="photolink" href="https://www.alextamkin.com/home" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><div class="photo p-catch "><span class="ini" aria-hidden="true">AT</span><img src="images/people/alex-tamkin.jpg" alt="Photo of Alex Tamkin" onerror="this.remove()"></div></a><div class="body"><h4><a href="https://www.alextamkin.com/home" target="_blank" rel="noopener" title="Open Alex Tamkin’s website">Alex Tamkin</a> <span class="badge">Tentative</span></h4><div class="aff">Anthropic</div><p>Foundation-model evaluation, long-horizon behavior, human–AI interaction, and societal impacts.</p></div></article></div>
+</div></section><section id="organizers"><div class="wrap">
+  <h2>Organizers</h2>
+  <div class="orgs"><article class="person"><a class="photolink" href="https://sites.google.com/view/elahe-arani/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><div class="photo p-operate "><span class="ini" aria-hidden="true">EA</span><img src="images/people/elahe-arani.jpg" alt="Photo of Elahe Arani" onerror="this.remove()"></div></a><div class="body"><h4><a href="https://sites.google.com/view/elahe-arani/" target="_blank" rel="noopener" title="Open Elahe Arani’s website">Elahe Arani</a></h4><div class="aff">Wayve</div><p>Foundation models for embodied intelligence and continual learning.</p></div></article><article class="person"><a class="photolink" href="https://ppolon.github.io/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><div class="photo p-ink "><span class="ini" aria-hidden="true">JC</span><img src="images/people/jonghyun-choi.jpg" alt="Photo of Jonghyun Choi" onerror="this.remove()"></div></a><div class="body"><h4><a href="https://ppolon.github.io/" target="_blank" rel="noopener" title="Open Jonghyun Choi’s website">Jonghyun Choi</a></h4><div class="aff">Seoul National University</div><p>Continual learning, vision–language models, and embodied AI.</p></div></article><article class="person"><a class="photolink" href="https://fra31.github.io/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><div class="photo p-catch "><span class="ini" aria-hidden="true">FC</span><img src="images/people/francesco-croce.jpg" alt="Photo of Francesco Croce" onerror="this.remove()"></div></a><div class="body"><h4><a href="https://fra31.github.io/" target="_blank" rel="noopener" title="Open Francesco Croce’s website">Francesco Croce</a></h4><div class="aff">Aalto University; ELLIS Institute Finland</div><p>Adversarial robustness, AI safety, and multimodal models.</p></div></article><article class="person"><a class="photolink" href="https://sepidsh.github.io/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><div class="photo p-adapt "><span class="ini" aria-hidden="true">SH</span><img src="images/people/sepid-hosseini.jpg" alt="Photo of Sepid Hosseini" onerror="this.remove()"></div></a><div class="body"><h4><a href="https://sepidsh.github.io/" target="_blank" rel="noopener" title="Open Sepid Hosseini’s website">Sepid Hosseini</a></h4><div class="aff">RBC Borealis</div><p>Trustworthy ML, domain adaptation, and post-deployment reliability.</p></div></article><article class="person"><a class="photolink" href="https://sites.google.com/view/ariankhorasani/home" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><div class="photo p-operate "><span class="ini" aria-hidden="true">AK</span><img src="images/people/arian-khorasani.jpg" alt="Photo of Arian Khorasani" onerror="this.remove()"></div></a><div class="body"><h4><a href="https://sites.google.com/view/ariankhorasani/home" target="_blank" rel="noopener" title="Open Arian Khorasani’s website">Arian Khorasani</a></h4><div class="aff">Jinesis Lab, University of Toronto</div><p>AI safety and reliability.</p></div></article><article class="person"><a class="photolink" href="https://evgeniarusak.github.io/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><div class="photo p-ink "><span class="ini" aria-hidden="true">ER</span><img src="images/people/evgenia-rusak.jpg" alt="Photo of Evgenia Rusak" onerror="this.remove()"></div></a><div class="body"><h4><a href="https://evgeniarusak.github.io/" target="_blank" rel="noopener" title="Open Evgenia Rusak’s website">Evgenia Rusak</a></h4><div class="aff">Cohere</div><p>Distribution shift, adaptation, and failure modes of foundation models.</p></div></article><article class="person"><a class="photolink" href="https://imaginarynumber.net/research/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><div class="photo p-catch "><span class="ini" aria-hidden="true">ES</span><img src="images/people/evan-shelhamer.jpg" alt="Photo of Evan Shelhamer" onerror="this.remove()"></div></a><div class="body"><h4><a href="https://imaginarynumber.net/research/" target="_blank" rel="noopener" title="Open Evan Shelhamer’s website">Evan Shelhamer</a></h4><div class="aff">University of British Columbia; Vector Institute</div><p>Robust vision, test-time adaptation, and adaptive computation.</p></div></article><article class="person"><a class="photolink" href="https://aserety.github.io/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><div class="photo p-adapt "><span class="ini" aria-hidden="true">TY</span><img src="images/people/teresa-yeo.jpg" alt="Photo of Teresa Yeo" onerror="this.remove()"></div></a><div class="body"><h4><a href="https://aserety.github.io/" target="_blank" rel="noopener" title="Open Teresa Yeo’s website">Teresa Yeo</a></h4><div class="aff">Google DeepMind</div><p>Closed-loop and test-time adaptation, and self-improving models.</p></div></article></div>
+  <div id="committee"><h3 class="sub">Program committee</h3>
+    <p>More than 100 researchers from over 70 institutions have already agreed to review for CAO 2027, and we aim to recruit at least 300. Interested in reviewing? <a href="#become-reviewer">Register below</a>.</p>
+    <details>
+      <summary>Confirmed reviewers (104)</summary>
+      <div class="revlist" id="revlist"></div>
+    </details><div class="callout" id="become-reviewer">
+  <div>
+    <h3>Become a reviewer</h3>
+    <p>We are building a program committee of at least 300 reviewers across distribution shift, monitoring, adaptation, robustness, and reliable deployment. Students, early-career researchers, and practitioners are welcome. Register by filling in the reviewer form. For anything else, email us.</p>
+  </div>
+  <div class="callout-actions">
+    <a class="mailbtn" href="https://docs.google.com/forms/d/1QcM-HOkQsnDMWWqiw8ZriC0iD08c02BM2C4vC3NkKGY/viewform" target="_blank" rel="noopener"><svg class="env" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="3" width="16" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 8h8M8 12h8M8 16h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Fill in the reviewer form</span></a>
+    <a class="mailbtn ghost" href="mailto:caoiclr@gmail.com"><svg class="env" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="2.5" y="5" width="19" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 6.5l8.5 7 8.5-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span>caoiclr@gmail.com</span></a>
+  </div>
+</div></div>
+</div></section>
+<script>
+// Confirmed reviewers, grouped by institution. Edit this list to add or remove reviewers.
+const reviewers = [
+  ["Adobe",["Aprameya Bharadwaj"]],["Quadeye",["Sukrit Jindal"]],
+  ["RBC Borealis",["Amin Shabani","Fred Tung","Edward Smith","Shahrzad Kianidehkordi","Hossein Sharifi"]],
+  ["Upper Hand",["Trishita Dhara"]],
+  ["Google",["Debanshu Das","Pooja Jhunjhunwala","Rishabh Patil","Dimitris Paparas"]],
+  ["Mila",["Arian Khorasani","Shayan Nejadshamsi","Darshan Patil"]],
+  ["Salesforce",["Surbhi Motghare"]],["Concordia Univ.",["Omid Reza Heidari"]],
+  ["UBC",["Yash Mali","Siddharth Rout","Tim G Zhou","Vivian White","Qiaoyue Tang","Zefeng Li"]],
+  ["RBC",["Thibaut Durand"]],
+  ["UW-Madison",["Sungjun Cho","Yi Chen","Geunwoo Park"]],["Mem0",["Agam Pandey"]],
+  ["UAlberta",["Deepak Mamillapalli","Thanh Nguyen","Chirooth Girigowda","Golnaz Mesbahi","Tulika Chakraborty","Gabriel Chukwu Okoli"]],
+  ["Tulane",["Yunbei Zhang"]],["DeepMind",["Sridhar Thiagarajan"]],
+  ["CMU",["Ashish Vashist","Lara Sofia Pinto Sá Neves","Mayank Ravishankara"]],
+  ["IIIT Allahabad",["Gora Chand Nandi","Mohammad Saqlain"]],
+  ["Tübingen",["Alexander Rubinstein"]],["IFAM",["Albert França Josuá Costa"]],
+  ["Indiana",["Yue Yu"]],["Cambridge",["Zheyuan Hu"]],["Kookmin Univ.",["Mingyu Kim"]],
+  ["Brownian",["Ahmed Wez"]],["Abdelmalek Essaâdi Univ.",["Hamza Nadif"]],
+  ["Amazon",["Abhinav Bohra","Pranav Ladkat","Rishabh Agrawal","Ke Wang","Tarun Prasad"]],
+  ["Mohammed First Univ.",["Ismail Lamaakal","Chaymae Yahyati"]],
+  ["uOttawa",["Fardad Dadboud","Hamid Azad"]],["UMich-Dearborn",["Yunus Zeytuncu"]],
+  ["CUHK-Shenzhen",["Juexiao Zhou"]],["Cologne",["Mohammad Sadegh Akhondzadeh"]],
+  ["Independent",["Maksim Kazanskii"]],["Stanford",["Xiangning Lin"]],["RIT",["Marzieh Amiri Shahbazi"]],
+  ["Georgia Tech",["Dessailly Kikuku"]],["LocationMind",["Zekun Cai"]],["Fudan",["Zhenyu Yu"]],
+  ["Wealthsimple",["Vahab Khoshdel"]],["MBZUAI",["Yongqiang Chen"]],
+  ["Sultan Moulay Slimane Univ.",["Yassine Maleh"]],["TU Wien",["Monika Farsang"]],
+  ["Chalmers",["Jayadev Naram"]],["IIT Bombay",["Pirzada Suhail"]],["MAHE",["Sohan Venkatesh"]],
+  ["École Polytechnique",["Martin Gubri"]],["Workday",["Raghav Sharma"]],["Stripe",["Yashu Pura Lingaraju"]],
+  ["Apple",["Xing Jin"]],["KDI School",["Sungkyu Park"]],["Qualcomm",["Motasem Alfarra"]],
+  ["DKFZ",["Giuseppe Serra"]],["Sprinklr",["Aayush Kubba"]],["JPMC",["Nishan Srishankar"]],
+  ["ConvoSearch",["Shardul Aggarwal"]],["Safran SA",["Jennifer Vandoni"]],
+  ["IIT Kharagpur",["Ayush Sunil Munot"]],["Manulife Canada",["Rafael Madrigal"]],
+  ["Boston Univ.",["Spyridon Konstantinos Dragazis"]],["Panasonic",["Sarina Hosseini"]],
+  ["Vector",["Ehsan Ur Rahman Mohammed"]],["Seoul National Univ.",["Minhyuk Seo"]],
+  ["Nanyang Technological Univ.",["Jaehong Yoon","Tang Zhenwei"]],["Univ. of Bremen",["Martin Mundt"]],
+  ["KU Leuven",["Timm Hess"]],["National Univ. of Singapore",["Shantam Sharma","Nhung Bui"]],
+  ["UT Austin",["Smriti Singh"]],["Virginia Tech",["Rohit Kumar Salla"]],["Netflix",["Dewang Sultania"]],
+  ["MD Anderson Cancer Center",["Anas Zafar"]],["Innopolis Univ.",["Artem Matevosian"]],
+  ["Univ. of Pisa",["Eric Nuertey Coleman"]],["University of Calgary",["Mahmudul Haque"]],
+  ["ETS Montreal",["Heitor Rapela Medeiros"]]
+];
+const box = document.getElementById("revlist");
+let n = 0;
+reviewers.forEach(([inst, names]) => {
+  n += names.length;
+  const d = document.createElement("div");
+  const b = document.createElement("b"); b.textContent = names.join(", ");
+  d.append(b, " (" + inst + ")");
+  box.append(d);
+});
+document.querySelector("#committee summary").textContent = "Confirmed reviewers (" + n + ")";
+</script><section id="participate"><div class="wrap">
+  <h2>Taking part</h2>
+  <div class="shortcards">
+    <div><h3>In person</h3><p>CAO 2027 is an in-person workshop. If something unforeseen keeps you from attending, email us and we will work something out.</p></div>
+    <div><h3>Student volunteers</h3><p>If the workshop is accepted, we will look for three student volunteers, with registration covered. Interested? Email us.</p></div>
+    <div><h3>Accessibility</h3><p>Need an accommodation to take part? Email us and we will coordinate with ICLR.</p></div>
+    <div><h3>Awards and support</h3><p>Best Paper and Best Poster awards, plus financial support for participants. Details after acceptance.</p></div>
+  </div>
+  <p style="margin-top:22px"><a class="mailbtn" href="mailto:caoiclr@gmail.com"><svg class="env" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="2.5" y="5" width="19" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 6.5l8.5 7 8.5-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span>caoiclr@gmail.com</span></a></p>
+</div></section>
+<section id="play"><div class="wrap"><h2>Play the CAO loop</h2><p class="intro">Two one-minute games about keeping deployed models reliable. Nothing is recorded.</p></div></section>
+<section id="kir" class="game-sec"><div class="wrap">
+  <h2>Keep it running</h2>
+  <p class="intro">You are on call for a deployed model for 60 seconds. The world it serves will change, but you only see a noisy, delayed accuracy trace. Catch real drift, adapt when it matters, and keep serving users.</p>
+  <div class="game" tabindex="-1">
+    <div class="hud" aria-label="Game status">
+      <div><span>Time left</span><b data-time>60 s</b></div>
+      <div><span>Reliability score</span><b data-score>–</b></div>
+      <div class="hud-state"><span>Status</span><b data-state>Waiting to start</b></div>
+    </div>
+    <div class="stage">
+      <canvas aria-label="Live accuracy chart of the deployed model"></canvas>
+      <div class="overlay kir-intro">
+        <h3>How to play</h3>
+        <ul class="howto">
+          <li><b class="k catch">C</b><span><strong>Catch:</strong> raise an alarm when accuracy really drops. A false alarm costs 3 points.</span></li>
+          <li><b class="k adapt">A</b><span><strong>Adapt:</strong> retrain on recent data (needs an alarm first). Every update makes the model forget some of what it knew.</span></li>
+          <li><b class="k operate">S</b><span><strong>Safe mode:</strong> defer users instead of risking errors. No mistakes, but no service either.</span></li>
+        </ul>
+        <button class="btn primary" data-start type="button">Start the shift</button>
+      </div>
+      <div class="overlay below kir-result" hidden>
+        <div class="final"><b data-final>0</b><span>reliability score</span><em data-grade></em></div>
+        <ul class="statline" data-stats></ul>
+        <h3 class="postmortem">Your postmortem</h3>
+        <ul class="lessons" data-lessons></ul>
+        <p class="tiny">Turned a failure into an insight? That is what the <a href="#failures">Lessons from Failures track</a> is for.</p>
+        <div class="row">
+          <button class="btn primary" data-again type="button">Play again</button>
+          <button class="btn" data-share type="button"><span>Copy my score</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="controls">
+      <button class="ctl catch" data-catch type="button"><b>C</b><span>Catch</span></button>
+      <button class="ctl adapt" data-adapt type="button"><b>A</b><span>Adapt</span></button>
+      <button class="ctl operate" data-safe type="button" aria-pressed="false"><b>S</b><span>Safe mode</span></button>
+    </div>
+    <p class="sr-only" aria-live="polite" data-live></p>
+  </div>
+</div></section>
+
+<section id="sts" class="game-sec"><div class="wrap">
+  <h2>Spot the shift</h2>
+  <p class="intro">Points stream in from a deployed system. At some moment their distribution changes. Press Shift as soon as you notice, without jumping the gun. Then see how you compare with a classic CUSUM drift detector watching the same data.</p>
+  <div class="game" tabindex="-1">
+    <div class="hud"><div><span>Progress</span><b data-round>5 rounds</b></div><div class="hud-state"><span>Tip</span><b>The dashed ring is where normal data lives</b></div></div>
+    <div class="stage">
+      <canvas aria-label="Stream of data points"></canvas>
+      <div class="overlay sts-intro">
+        <h3>How to play</h3>
+        <p>Five rounds, each with a different kind of change. Press <b class="k adapt">Space</b>, tap the chart, or use the button. Pressing before the change is a false alarm; waiting too long is a miss.</p>
+        <button class="btn primary" data-start type="button">Start watching</button>
+      </div>
+      <div class="overlay below sts-roundresult" hidden>
+        <p class="what" data-what></p>
+        <dl class="vs"><div><dt>You</dt><dd class="v" data-you></dd></div><div><dt>CUSUM detector</dt><dd class="v" data-det></dd></div></dl>
+        <button class="btn primary" data-next type="button"><span>Next round</span></button>
+      </div>
+      <div class="overlay below sts-result" hidden>
+        <h3>Results</h3>
+        <ul class="vsum" data-summary></ul>
+        <p data-verdict></p>
+        <p class="tiny">Detecting change without labels is the first step of the CAO loop. <a href="#cfp">Working on it? Submit to CAO 2027.</a></p>
+        <button class="btn primary" data-again type="button">Play again</button>
+      </div>
+    </div>
+    <div class="controls one"><button class="ctl fail" data-shift type="button"><b>Space</b><span>Shift!</span></button></div>
+    <p class="sr-only" aria-live="polite" data-live></p>
+  </div>
+</div></section>
+<script src="play.js"></script>
+<section id="cao2026">
   <div class="wrap">
     <h2>CAO 2026 at ICLR</h2>
     <p class="intro">The first Catch, Adapt, and Operate workshop brought together researchers in drift detection, monitoring, test-time adaptation, continual learning, and reliable deployment.</p>
@@ -172,17 +377,6 @@
     </div>
   </div>
 </section>
-<section id="explore">
-  <div class="wrap">
-    <h2>Get involved</h2>
-    <div class="cards3">
-      <a href="call-for-papers.html"><b>Submit a paper</b><span>Research papers, tiny papers, and Lessons from Failures papers.</span></a>
-      <a href="organizers.html#become-reviewer"><b>Review for CAO</b><span>Join more than 100 researchers already on the program committee.</span></a>
-      <a href="participate.html"><b>Attend</b><span>In-person participation, student volunteers, and financial support.</span></a>
-    </div>
-  </div>
-</section>
-
 </main>
 <footer id="contact">
   <div class="wrap">
@@ -192,5 +386,25 @@
     <p style="margin-top:22px;color:#93A3B3">The 2nd Workshop on Catch, Adapt, and Operate (CAO). Proposal under preparation for ICLR 2027; all details are tentative.</p>
   </div>
 </footer>
+<script>
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('.navlinks a'));
+  var secs = links.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); });
+  var current = -1, ticking = false;
+  function update() {
+    ticking = false;
+    var line = window.innerHeight * 0.35, idx = -1;
+    secs.forEach(function (s, i) { if (s && s.getBoundingClientRect().top <= line) idx = i; });
+    if ((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 4) idx = secs.length - 1 - (secs[secs.length - 1].getBoundingClientRect().top > window.innerHeight ? 1 : 0);
+    if (idx === current) return;
+    current = idx;
+    links.forEach(function (a, i) { if (i === idx) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
+    if (idx >= 0) { var a = links[idx], bar = a.parentNode; bar.scrollLeft = Math.max(0, a.offsetLeft - bar.clientWidth / 2 + a.clientWidth / 2); }
+  }
+  window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>
 </body>
 </html>
