@@ -167,17 +167,6 @@
       const t0 = reveal ? 0 : t1 - WINDOW;
       const X = t => padL + (t - t0) / (t1 - t0) * W;
       const Y = v => padT + (1 - (v - 0.4) / 0.6) * H;
-      if (S && reveal) {
-        const cols = { gradual: "#FBF0D9", sudden: "#F7E1DC", return: "#E3EEF0", blip: "#ECE9F7" };
-        const ev = S.world.events;
-        ev.forEach((e, i) => {
-          const to = e.kind === "blip" ? e.from + e.blip : (i + 1 < ev.length ? ev[i + 1].from : DURATION);
-          const x0 = X(Math.max(e.from, t0)), x1 = X(Math.min(to, t1));
-          if (x1 > x0) { ctx.fillStyle = cols[e.kind]; ctx.fillRect(x0, padT, x1 - x0, H); }
-        });
-        ctx.fillStyle = "rgba(169,65,45,.10)";
-        for (const g of S.world.glitches) { const x0 = X(g.from), x1 = X(g.from + g.len); ctx.fillRect(x0, padT, x1 - x0, H); }
-      }
       ctx.strokeStyle = "#E4E9EE"; ctx.lineWidth = 1; ctx.fillStyle = C.ink2; ctx.font = "12px Schibsted Grotesk, system-ui, sans-serif";
       for (const v of [0.5, 0.7, 0.9]) {
         ctx.beginPath(); ctx.moveTo(padL, Y(v)); ctx.lineTo(w - padR, Y(v)); ctx.stroke();
@@ -213,7 +202,7 @@
         ctx.fillText(lab[ev.kind], x, padT + 12.5); ctx.textAlign = "left";
       }
       ctx.fillStyle = C.ink2; ctx.font = "12px Schibsted Grotesk, system-ui, sans-serif";
-      ctx.fillText(reveal ? "Shaded: what really happened. Dashed: true accuracy." : "model accuracy: keep it above the line", padL, h - 6);
+      ctx.fillText(reveal ? "Solid: what you saw. Dashed: the model's true accuracy." : "model accuracy: keep it above the line", padL, h - 6);
     }
 
     function loop(now) {
@@ -260,19 +249,16 @@
       hud(); draw(true);
       const sc = score();
       const lessons = [];
-      const retAcc = S.returnAcc.length ? S.returnAcc.reduce((x, y) => x + y, 0) / S.returnAcc.length : 1;
-      if (retAcc < 0.75 && S.adapts > 0) lessons.push(`When the original conditions came back, the model had partly forgotten them. Each update overwrote a little old knowledge: that is catastrophic forgetting.`);
-      if (S.falseAlarms >= 1) lessons.push(`${S.falseAlarms} false alarm${S.falseAlarms > 1 ? "s" : ""}: some dips were glitches in the monitoring data, not real drift (red stripes on the chart). Telling the two apart is the hard part of Catch.`);
-      if (S.blipAdapts >= 1) lessons.push("You adapted to a short blip that would have fixed itself. Not every change needs a response.");
-      if (S.missed >= 4) lessons.push(`The model was below the line for ${fmt(S.missed)} s without an alarm. Gradual drift is easy to miss.`);
-      if (S.safeTime >= 8) lessons.push(`You played it safe for ${fmt(S.safeTime, 0)} s. No mistakes, but users waited: playing safe is not free.`);
-      if (S.adapts === 0) lessons.push("You never adapted. Here the world really did change.");
-      if (!lessons.length) lessons.push("A clean run: you caught real drift, adapted quickly, and kept the model reliable. That loop is what CAO is about.");
+      if (S.falseAlarms >= 1) lessons.push(`${S.falseAlarms} false alarm${S.falseAlarms > 1 ? "s" : ""}: you pressed Catch when the model was actually fine.`);
+      if (S.missed >= 4) lessons.push(`The model was below the line for ${fmt(S.missed)} s before you caught it.`);
+      if (S.safeTime >= 8) lessons.push(`You played it safe for ${fmt(S.safeTime, 0)} s. No mistakes, but it only counts half.`);
+      if (S.adapts === 0) lessons.push("You never adapted.");
+      if (!lessons.length) lessons.push("A clean run: you caught the drops, adapted, and kept the model above the line.");
       const grade = sc >= 85 ? "Reliable operator! You win." : sc >= 70 ? "Nicely done. You win." : sc >= 55 ? "Getting there" : "Rough shift";
       result.querySelector("[data-final]").textContent = sc;
       result.querySelector("[data-grade]").textContent = grade;
       result.querySelector("[data-stats]").innerHTML =
-        `<li><b>${S.adapts}</b> adaptations</li><li><b>${S.falseAlarms}</b> false alarms</li><li><b>${fmt(S.missed)} s</b> unnoticed drift</li><li><b>${fmt(S.safeTime, 0)} s</b> in safe mode</li>`;
+        `<li><b>${S.adapts}</b> adaptations</li><li><b>${S.falseAlarms}</b> false alarms</li><li><b>${fmt(S.missed)} s</b> below the line, no alarm</li><li><b>${fmt(S.safeTime, 0)} s</b> in safe mode</li>`;
       result.querySelector("[data-lessons]").innerHTML = lessons.map(l => `<li>${l}</li>`).join("");
       const share = result.querySelector("[data-share]");
       share.onclick = () => {
