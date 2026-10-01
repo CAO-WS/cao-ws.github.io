@@ -48,7 +48,7 @@
     const DURATION = 30;          // seconds
     const DT = 1 / 30;            // simulation step
     const WINDOW = 15;            // seconds visible on the chart
-    const ADAPT_DELAY = 0.6;      // retraining time
+    const ADAPT_DELAY = 0.5;      // retraining time
     const FORGET = 0.9;           // fraction of old knowledge that survives each update
     const ACC_GOOD = 0.88;        // above this, nothing is really wrong (an alarm is false)
     const LINE = 0.8;             // the alert line
@@ -59,26 +59,42 @@
     let dims = setupCanvas(canvas, ASPECT);
     window.addEventListener("resize", () => { dims = setupCanvas(canvas, ASPECT); draw(S && S.done); });
 
-    // Hidden world: gradual drift, a new normal, a sudden shift, then the original conditions return.
+    // Hidden world, different every run: a random starting condition, then 3-5 random events
+    // (gradual drift, sudden shift, return to the original conditions, or a brief blip that fixes itself)
+    // with random sizes, directions and timing, plus 1-2 fake dips in the monitoring data.
     function makeWorld() {
-      const A = 0.2, B = rand(0.5, 0.6), Cc = rand(0.82, 0.9);
-      const t1 = rand(3, 4.5), t2 = t1 + rand(3.5, 4.5), t3 = t2 + rand(3, 4), t4 = t3 + rand(5, 6);
-      const segs = [
-        { from: 0, to: t1, kind: "stable", a: A, b: A },
-        { from: t1, to: t2, kind: "gradual", a: A, b: B },
-        { from: t2, to: t3, kind: "stable", a: B, b: B },
-        { from: t3, to: t4, kind: "sudden", a: Cc, b: Cc },
-        { from: t4, to: DURATION + 1, kind: "return", a: A, b: A }
-      ];
-      const glitches = [{ from: rand(1, 2.2), len: 1.4 }, { from: t2 + rand(0.6, 1.4), len: 1.3 }];
-      return { segs, glitches, A };
+      const A = rand(0.2, 0.8);
+      const far = x => { let y; do { y = rand(0.05, 0.95); } while (Math.abs(y - x) < 0.3); return y; };
+      const events = [];
+      let cur = A, t = rand(3, 5);
+      while (t < 24.5) {
+        let kind;
+        if (Math.abs(cur - A) > 0.15 && Math.random() < 0.4) kind = "return";
+        else kind = ["gradual", "sudden", "sudden", "blip"][Math.floor(Math.random() * 4)];
+        if (events.length < 2 && kind === "blip") kind = Math.random() < 0.5 ? "gradual" : "sudden";
+        if (kind === "gradual") { const to = far(cur), d = rand(2.5, 4); events.push({ kind, from: t, ramp: d, a: cur, b: to, end: t + d }); cur = to; t += d + rand(4.5, 7); }
+        else if (kind === "sudden") { const to = far(cur); events.push({ kind, from: t, ramp: 0.05, a: cur, b: to, end: t }); cur = to; t += rand(5, 7.5); }
+        else if (kind === "return") { events.push({ kind, from: t, ramp: 0.05, a: cur, b: A, end: t }); cur = A; t += rand(5, 7.5); }
+        else { const d = rand(2, 3); events.push({ kind, from: t, ramp: 0.05, a: cur, b: far(cur), blip: d, end: t + d }); t += d + rand(4, 6); }
+      }
+      const glitches = [], ng = 1 + Math.floor(Math.random() * 2);
+      for (let i = 0; i < ng; i++) {
+        let g, ok, tries = 0;
+        do { g = rand(1.5, 27); ok = events.every(e => Math.abs(e.from - g) > 2) && glitches.every(h => Math.abs(h.from - g) > 3); } while (!ok && ++tries < 50);
+        glitches.push({ from: g, len: rand(1, 1.5), bias: -rand(0.1, 0.16) });
+      }
+      return { A, events, glitches };
     }
     function envAt(world, t) {
-      for (const s of world.segs) if (t >= s.from && t < s.to)
-        return s.a + (s.b - s.a) * clamp((t - s.from) / (s.to - s.from), 0, 1);
-      return world.A;
+      let v = world.A;
+      for (const e of world.events) {
+        if (t < e.from) break;
+        v = e.kind === "blip" ? (t < e.from + e.blip ? e.b : e.a) : e.a + (e.b - e.a) * clamp((t - e.from) / e.ramp, 0, 1);
+      }
+      return v;
     }
-    function glitchAt(world, t) { return world.glitches.some(g => t >= g.from && t < g.from + g.len); }
+    function glitchAt(world, t) { for (const g of world.glitches) if (t >= g.from && t < g.from + g.len) return g.bias; return 0; }
+    function eventAt(world, t) { let cur = null; for (const e of world.events) if (t >= e.from) cur = e; return cur; }
     function trueAcc(know, e) {
       let best = 0;
       for (const k of know) best = Math.max(best, k.w * Math.exp(-Math.pow((e - k.r) / 0.13, 2)));
@@ -86,7 +102,8 @@
     }
 
     function reset() {
-      S = { world: makeWorld(), t: 0, know: [{ r: 0.2, w: 1 }], obs: [], ema: 0.95,
+      const world = makeWorld();
+      S = { world, t: 0, know: [{ r: world.A, w: 1 }], obs: [], ema: 0.95, blipAdapts: 0,
             alarm: false, safe: false, safeUntil: 0, pending: null, events: [],
             falseAlarms: 0, adapts: 0, missed: 0, safeTime: 0, up: 0, returnAcc: [], done: false };
     }
@@ -104,14 +121,14 @@
       }
       if (S.safe && S.t >= S.safeUntil) { S.safe = false; say("Back to normal operation."); }
       const a = trueAcc(S.know, e);
-      const noise = glitchAt(w, S.t) ? 0.06 : 0.03;
-      S.ema += (clamp(a + gauss() * noise, 0.3, 1) - S.ema) * 0.12;
+      S.ema += (clamp(a + glitchAt(w, S.t) + gauss() * 0.03, 0.3, 1) - S.ema) * 0.12;
       S.obs.push({ t: S.t, o: S.ema, a });
       // Score: time the model is reliable (above the line). Operate/safe mode counts half: no errors, but no service.
       if (S.safe) { S.up += 0.5 * DT; S.safeTime += DT; }
       else if (a >= LINE) S.up += DT;
       if (a < LINE && !S.alarm && !S.safe && !S.pending) S.missed += DT;
-      if (S.t >= w.segs[w.segs.length - 1].from + 1) S.returnAcc.push(a);
+      const ev = eventAt(w, S.t);
+      if (ev && ev.kind === "return" && S.t >= ev.from + 1) S.returnAcc.push(a);
       S.t += DT;
     }
 
@@ -151,11 +168,15 @@
       const X = t => padL + (t - t0) / (t1 - t0) * W;
       const Y = v => padT + (1 - (v - 0.4) / 0.6) * H;
       if (S && reveal) {
-        const cols = { stable: "#EEF1F4", gradual: "#FBF0D9", sudden: "#F7E1DC", return: "#E3EEF0" };
-        for (const s of S.world.segs) {
-          const a = X(Math.max(s.from, t0)), b = X(Math.min(s.to, t1));
-          if (b > a) { ctx.fillStyle = cols[s.kind]; ctx.fillRect(a, padT, b - a, H); }
-        }
+        const cols = { gradual: "#FBF0D9", sudden: "#F7E1DC", return: "#E3EEF0", blip: "#ECE9F7" };
+        const ev = S.world.events;
+        ev.forEach((e, i) => {
+          const to = e.kind === "blip" ? e.from + e.blip : (i + 1 < ev.length ? ev[i + 1].from : DURATION);
+          const x0 = X(Math.max(e.from, t0)), x1 = X(Math.min(to, t1));
+          if (x1 > x0) { ctx.fillStyle = cols[e.kind]; ctx.fillRect(x0, padT, x1 - x0, H); }
+        });
+        ctx.fillStyle = "rgba(169,65,45,.10)";
+        for (const g of S.world.glitches) { const x0 = X(g.from), x1 = X(g.from + g.len); ctx.fillRect(x0, padT, x1 - x0, H); }
       }
       ctx.strokeStyle = "#E4E9EE"; ctx.lineWidth = 1; ctx.fillStyle = C.ink2; ctx.font = "12px Schibsted Grotesk, system-ui, sans-serif";
       for (const v of [0.5, 0.7, 0.9]) {
@@ -192,7 +213,7 @@
         ctx.fillText(lab[ev.kind], x, padT + 12.5); ctx.textAlign = "left";
       }
       ctx.fillStyle = C.ink2; ctx.font = "12px Schibsted Grotesk, system-ui, sans-serif";
-      ctx.fillText(reveal ? "what really happened (shaded) and true accuracy (dashed)" : "model accuracy: keep it above the line", padL, h - 6);
+      ctx.fillText(reveal ? "Shaded: what really happened. Dashed: true accuracy." : "model accuracy: keep it above the line", padL, h - 6);
     }
 
     function loop(now) {
@@ -215,13 +236,14 @@
     function doCatch() {
       if (!S || S.done || S.alarm || S.pending) return;
       const a = trueAcc(S.know, envAt(S.world, S.t));
-      if (a >= ACC_GOOD) { S.falseAlarms++; log("false", "False alarm: that was just noise. −2 points."); }
+      if (a >= ACC_GOOD) { S.falseAlarms++; log("false", "False alarm: nothing really changed. −2 points."); }
       else { S.alarm = true; log("catch", "Drift caught. Now press Adapt."); }
       hud();
     }
     function doAdapt() {
       if (!S || S.done || !S.alarm || S.pending) return;
       S.alarm = false; S.adapts++;
+      const ev = eventAt(S.world, S.t); if (ev && ev.kind === "blip" && S.t < ev.from + ev.blip) S.blipAdapts++;
       S.pending = { at: S.t + ADAPT_DELAY, e: envAt(S.world, S.t) };
       log("adapt", "Retraining on recent data…");
       hud();
@@ -240,12 +262,13 @@
       const lessons = [];
       const retAcc = S.returnAcc.length ? S.returnAcc.reduce((x, y) => x + y, 0) / S.returnAcc.length : 1;
       if (retAcc < 0.75 && S.adapts > 0) lessons.push(`When the original conditions came back, the model had partly forgotten them. Each update overwrote a little old knowledge: that is catastrophic forgetting.`);
-      if (S.falseAlarms >= 1) lessons.push(`${S.falseAlarms} false alarm${S.falseAlarms > 1 ? "s" : ""}: some wiggles were just noise. Telling noise from real drift is the hard part of Catch.`);
+      if (S.falseAlarms >= 1) lessons.push(`${S.falseAlarms} false alarm${S.falseAlarms > 1 ? "s" : ""}: some dips were glitches in the monitoring data, not real drift (red stripes on the chart). Telling the two apart is the hard part of Catch.`);
+      if (S.blipAdapts >= 1) lessons.push("You adapted to a short blip that would have fixed itself. Not every change needs a response.");
       if (S.missed >= 4) lessons.push(`The model was below the line for ${fmt(S.missed)} s without an alarm. Gradual drift is easy to miss.`);
       if (S.safeTime >= 8) lessons.push(`You played it safe for ${fmt(S.safeTime, 0)} s. No mistakes, but users waited: playing safe is not free.`);
       if (S.adapts === 0) lessons.push("You never adapted. Here the world really did change.");
       if (!lessons.length) lessons.push("A clean run: you caught real drift, adapted quickly, and kept the model reliable. That loop is what CAO is about.");
-      const grade = sc >= 85 ? "Reliable operator! You win." : sc >= 75 ? "Nicely done. You win." : sc >= 65 ? "Getting there" : "Rough shift";
+      const grade = sc >= 85 ? "Reliable operator! You win." : sc >= 70 ? "Nicely done. You win." : sc >= 55 ? "Getting there" : "Rough shift";
       result.querySelector("[data-final]").textContent = sc;
       result.querySelector("[data-grade]").textContent = grade;
       result.querySelector("[data-stats]").innerHTML =
