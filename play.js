@@ -36,8 +36,7 @@
     const canvas = root.querySelector("canvas");
     const btnStart = root.querySelector("[data-start]");
     const btnCatch = root.querySelector("[data-catch]");
-    const btnAdapt = root.querySelector("[data-adapt]");
-    const btnSafe = root.querySelector("[data-safe]");
+        const btnSafe = root.querySelector("[data-safe]");
     const hudTime = root.querySelector("[data-time]");
     const hudScore = root.querySelector("[data-score]");
     const hudState = root.querySelector("[data-state]");
@@ -45,13 +44,13 @@
     const intro = root.querySelector(".kir-intro");
     const result = root.querySelector(".kir-result");
 
-    const DURATION = 60;          // seconds
+    const DURATION = 45;          // seconds
     const DT = 1 / 30;            // simulation step
     const WINDOW = 20;            // seconds visible on the chart
     const USERS_PER_S = 20;
     const ADAPT_DELAY = 1.2;      // retraining time
-    const FORGET = 0.68;          // what fraction of old knowledge survives each update
-    const ACC_GOOD = 0.85;        // "nothing is wrong" level for judging alarms
+    const FORGET = 0.82;          // what fraction of old knowledge survives each update
+    const ACC_GOOD = 0.88;        // "nothing is wrong" level for judging alarms
 
     let S = null, raf = null, last = 0, acc = 0;
     const ASPECT = w => (w < 600 ? 0.62 : 0.42);
@@ -61,7 +60,7 @@
     // A run's hidden world: piecewise environment e(t) and short "glitch" windows of noisy telemetry.
     function makeWorld() {
       const A = 0.2, B = rand(0.5, 0.6), Cc = rand(0.82, 0.9);
-      const t1 = rand(7, 10), t2 = t1 + rand(7, 9), t3 = t2 + rand(5, 7), t4 = t3 + rand(9, 12);
+      const t1 = rand(5, 7), t2 = t1 + rand(5, 6), t3 = t2 + rand(4, 5), t4 = t3 + rand(7, 9);
       const segs = [
         { from: 0, to: t1, kind: "stable", a: A, b: A, label: "Original conditions" },
         { from: t1, to: t2, kind: "gradual", a: A, b: B, label: "Gradual drift" },
@@ -69,7 +68,7 @@
         { from: t3, to: t4, kind: "sudden", a: Cc, b: Cc, label: "Sudden shift" },
         { from: t4, to: DURATION + 1, kind: "return", a: A, b: A, label: "Original conditions return" }
       ];
-      const glitches = [{ from: rand(2.5, 5), len: 2.2 }, { from: t2 + rand(1, 3), len: 2.0 }];
+      const glitches = [{ from: rand(1.5, 3.5), len: 1.8 }, { from: t2 + rand(0.8, 2), len: 1.6 }];
       return { segs, glitches, A };
     }
     function envAt(world, t) {
@@ -110,7 +109,7 @@
         say("Update deployed.");
       }
       const a = trueAcc(S.know, e);
-      const noise = glitchAt(w, S.t) ? 0.13 : 0.03;
+      const noise = glitchAt(w, S.t) ? 0.08 : 0.03;
       const o = clamp(a + gauss() * noise, 0.3, 1);
       S.ema += (o - S.ema) * 0.12;
       S.obs.push({ t: S.t, o: S.ema, a });
@@ -126,20 +125,22 @@
     }
 
     function score() {
-      const s = 100 * S.util / (S.users * 0.9 || 1) - 3 * S.falseAlarms;
+      const s = 100 * S.util / (S.users * 0.9 || 1) - 2 * S.falseAlarms;
       return Math.round(clamp(s, 0, 100));
     }
 
     function hud() {
       hudTime.textContent = Math.max(0, Math.ceil(DURATION - S.t)) + " s";
       hudScore.textContent = S.users > 0 ? score() : "–";
-      let st = "Serving users";
-      if (S.pendingAdapt) st = "Retraining…";
-      else if (S.safe) st = "Safe mode: deferring users";
-      else if (S.alarm) st = "Alarm raised";
+      let st = "All good: keep watching";
+      const low = S.obs.length && S.obs[S.obs.length - 1].o < 0.8;
+      if (S.done) st = "Shift over";
+      else if (S.pendingAdapt) st = "Retraining the model…";
+      else if (S.safe) st = "Safe mode: users are waiting";
+      else if (low) st = "Below the line: press Catch & fix!";
       hudState.textContent = st;
-      btnAdapt.disabled = !S.alarm || !!S.pendingAdapt || S.done;
-      btnCatch.disabled = S.alarm || S.done;
+      hudState.classList.toggle("warn", !!low && !S.pendingAdapt && !S.safe && !S.done);
+      btnCatch.disabled = !!S.pendingAdapt || S.done;
       btnSafe.disabled = S.done;
       btnSafe.setAttribute("aria-pressed", S.safe ? "true" : "false");
       btnSafe.querySelector("span").textContent = S.safe ? "Resume serving" : "Safe mode";
@@ -178,14 +179,17 @@
 
       if (!S) return;
       // observed (smoothed) accuracy
-      ctx.strokeStyle = C.ink; ctx.lineWidth = 2.5; ctx.lineJoin = "round"; ctx.beginPath();
-      let started = false;
+      ctx.lineWidth = 2.5; ctx.lineJoin = "round"; ctx.lineCap = "round";
+      let prev = null;
       for (const p of S.obs) {
         if (p.t < t0) continue;
         const x = X(p.t), y = Y(clamp(p.o, 0.4, 1));
-        if (!started) { ctx.moveTo(x, y); started = true; } else ctx.lineTo(x, y);
+        if (prev) {
+          ctx.strokeStyle = p.o < 0.8 ? C.fail : C.ink;
+          ctx.beginPath(); ctx.moveTo(prev[0], prev[1]); ctx.lineTo(x, y); ctx.stroke();
+        }
+        prev = [x, y];
       }
-      ctx.stroke();
       // true accuracy (only after the run)
       if (reveal) {
         ctx.strokeStyle = C.adapt; ctx.lineWidth = 1.5; ctx.setLineDash([3, 3]); ctx.beginPath();
@@ -193,21 +197,21 @@
         ctx.stroke(); ctx.setLineDash([]);
       }
       // event markers
-      const mk = { catch: C.catchBright, adapt: C.adapt, safe: C.operate, unsafe: C.operate, false: C.fail };
+      const mk = { catch: C.adapt, adapt: C.adapt, safe: C.operate, unsafe: C.operate, false: C.fail };
       for (const ev of S.events) {
         if (ev.t < t0) continue;
         const x = X(ev.t);
         ctx.strokeStyle = mk[ev.kind] || C.ink; ctx.lineWidth = 2;
         ctx.beginPath(); ctx.moveTo(x, padT); ctx.lineTo(x, padT + H); ctx.stroke();
         ctx.fillStyle = mk[ev.kind] || C.ink;
-        const lab = { catch: "C", adapt: "A", safe: "S", unsafe: "S", false: "✕" }[ev.kind];
+        const lab = { catch: "✓", adapt: "A", safe: "S", unsafe: "S", false: "✕" }[ev.kind];
         ctx.beginPath(); ctx.arc(x, padT + 9, 8, 0, Math.PI * 2); ctx.fill();
         ctx.fillStyle = "#fff"; ctx.font = "bold 10px Schibsted Grotesk, system-ui, sans-serif"; ctx.textAlign = "center";
         ctx.fillText(lab, x, padT + 12.5); ctx.textAlign = "left";
       }
       // time axis
       ctx.fillStyle = C.ink2; ctx.font = "12px Schibsted Grotesk, system-ui, sans-serif";
-      ctx.fillText(reveal ? "full run (shaded: hidden conditions; dashed: true accuracy)" : "observed accuracy (labels arrive noisy and late)", padL, h - 6);
+      ctx.fillText(reveal ? "what really happened (shaded) and true accuracy (dashed)" : "model accuracy: keep it above the line", padL, h - 6);
     }
 
     function loop(now) {
@@ -223,24 +227,19 @@
       reset(); intro.hidden = true; result.hidden = true;
       root.classList.add("playing");
       last = performance.now(); acc = 0; hud(); draw();
-      say("Shift started. Watch the accuracy trace.");
+      say("Shift started. Press Space when the line drops below the dashed line.");
       root.querySelector(".game").focus({ preventScroll: true });
       raf = requestAnimationFrame(loop);
     }
 
     function doCatch() {
-      if (!S || S.done || S.alarm) return;
+      if (!S || S.done || S.pendingAdapt) return;
       const a = trueAcc(S.know, envAt(S.world, S.t));
-      S.alarm = true;
-      if (a >= ACC_GOOD) { S.falseAlarms++; S.alarm = false; log("false", "False alarm: nothing had actually changed. −3 points."); }
-      else log("catch", "Alarm raised. You can now adapt.");
-      hud();
-    }
-    function doAdapt() {
-      if (!S || S.done || !S.alarm || S.pendingAdapt) return;
-      S.adapts++; S.alarm = false;
+      if (a >= ACC_GOOD) { S.falseAlarms++; log("false", "False alarm: that was just noise. −2 points."); hud(); return; }
+      log("catch");
+      S.adapts++;
       S.pendingAdapt = { at: S.t + ADAPT_DELAY, e: envAt(S.world, S.t) };
-      log("adapt", "Retraining on recent data…");
+      say("Caught it. Retraining on recent data…");
       hud();
     }
     function doSafe() {
@@ -257,16 +256,16 @@
       const retAcc = S.returnAcc.length ? S.returnAcc.reduce((x, y) => x + y, 0) / S.returnAcc.length : 1;
       if (retAcc < 0.75 && S.adapts > 0) lessons.push(`When the original conditions came back, the model had partly forgotten them (true accuracy about ${Math.round(retAcc * 100)}%). Each of your ${S.adapts} updates overwrote some old knowledge: catastrophic forgetting.`);
       else if (S.adapts >= 7) lessons.push(`You updated the model ${S.adapts} times. Frequent updates are costly and each one erodes what the model already knew.`);
-      if (S.falseAlarms >= 1) lessons.push(`${S.falseAlarms} false alarm${S.falseAlarms > 1 ? "s" : ""}. Some dips were noisy telemetry, not real drift. Telling the two apart is the core of the Catch problem.`);
+      if (S.falseAlarms >= 1) lessons.push(`${S.falseAlarms} false alarm${S.falseAlarms > 1 ? "s" : ""}. Some wiggles were just noise, not real drift. Telling the two apart is the hard part of catching drift.`);
       if (S.missed >= 6) lessons.push(`Real degradation went unflagged for ${fmt(S.missed)} s. Gradual drift is hard to see on a noisy trace.`);
       if (S.safeTime >= 12) lessons.push(`You spent ${fmt(S.safeTime, 0)} s in safe mode. No errors, but ${Math.round(S.deferred)} users went unserved. Abstaining is a valid response, but it is not free.`);
-      if (S.adapts === 0) lessons.push("You never adapted. Sometimes staying put is right, but here the world really did change.");
-      if (!lessons.length) lessons.push("A clean run: you caught the real shifts, adapted sparingly, and kept serving users. That balance is exactly what CAO studies.");
-      const grade = sc >= 80 ? "Reliable operator" : sc >= 65 ? "Getting there" : sc >= 50 ? "Rough shift" : "Incident report needed";
+      if (S.adapts === 0) lessons.push("You never retrained. Sometimes staying put is right, but here the world really did change.");
+      if (!lessons.length) lessons.push("A clean run: you caught the real shifts, retrained only when needed, and kept serving users. That balance is exactly what CAO studies.");
+      const grade = sc >= 80 ? "Reliable operator! You win." : sc >= 72 ? "Nicely done. You win." : sc >= 62 ? "Getting there" : "Rough shift";
       result.querySelector("[data-final]").textContent = sc;
       result.querySelector("[data-grade]").textContent = grade;
       result.querySelector("[data-stats]").innerHTML =
-        `<li><b>${S.adapts}</b> updates</li><li><b>${S.falseAlarms}</b> false alarms</li><li><b>${fmt(S.missed)} s</b> of unflagged drift</li><li><b>${fmt(S.safeTime, 0)} s</b> in safe mode</li>`;
+        `<li><b>${S.adapts}</b> retrains</li><li><b>${S.falseAlarms}</b> false alarms</li><li><b>${fmt(S.missed)} s</b> of unflagged drift</li><li><b>${fmt(S.safeTime, 0)} s</b> in safe mode</li>`;
       result.querySelector("[data-lessons]").innerHTML = lessons.map(l => `<li>${l}</li>`).join("");
       const share = result.querySelector("[data-share]");
       share.onclick = () => {
@@ -283,17 +282,15 @@
     btnStart.addEventListener("click", start);
     root.querySelector("[data-again]").addEventListener("click", start);
     btnCatch.addEventListener("click", doCatch);
-    btnAdapt.addEventListener("click", doAdapt);
     btnSafe.addEventListener("click", doSafe);
     document.addEventListener("keydown", ev => {
       if (!S || S.done || ev.altKey || ev.ctrlKey || ev.metaKey) return;
       if (/^(INPUT|TEXTAREA|SELECT)$/.test((ev.target.tagName || ""))) return;
       const k = ev.key.toLowerCase();
-      if (k === "c") { doCatch(); ev.preventDefault(); }
-      if (k === "a") { doAdapt(); ev.preventDefault(); }
-      if (k === "s") { doSafe(); ev.preventDefault(); }
+      if (k === " " || k === "spacebar" || k === "c") { ev.preventDefault(); if (!ev.repeat) doCatch(); }
+      if (k === "s") { ev.preventDefault(); doSafe(); }
     });
-    [btnCatch, btnAdapt, btnSafe].forEach(b => b.disabled = true);
+    [btnCatch, btnSafe].forEach(b => b.disabled = true);
     draw();
   })();
 
@@ -312,15 +309,15 @@
     const roundBox = root.querySelector(".sts-roundresult");
     const result = root.querySelector(".sts-result");
 
-    const RATE = 14;          // points per second
+    const RATE = 12;          // points per second
     const FADE = 3.0;         // seconds a point stays visible
-    const MISS_AFTER = 8;     // seconds after the change before it counts as missed
+    const MISS_AFTER = 6;     // seconds after the change before it counts as missed
     const ROUNDS = [
-      { name: "Mean shift", hint: "the cloud moves", gen: () => [gauss() + 1.6, gauss()] },
-      { name: "Spread increase", hint: "the cloud gets wider", gen: () => [gauss() * 2.1, gauss() * 2.1] },
-      { name: "New subpopulation", hint: "a new cluster appears", gen: () => Math.random() < 0.3 ? [2.4 + gauss() * 0.35, 1.9 + gauss() * 0.35] : [gauss(), gauss()] },
-      { name: "Vertical shift", hint: "the cloud moves down", gen: () => [gauss(), gauss() - 1.1] },
-      { name: "Subtle shift", hint: "a small move", gen: () => [gauss() + 0.75, gauss()] }
+      { name: "Shift right", hint: "the cloud moved right", gen: () => [gauss() + 2.2, gauss()] },
+      { name: "Spread out", hint: "the cloud got wider", gen: () => [gauss() * 2.6, gauss() * 2.6] },
+      { name: "New group", hint: "a new cluster appeared", gen: () => Math.random() < 0.4 ? [2.5 + gauss() * 0.35, 2.0 + gauss() * 0.35] : [gauss(), gauss()] },
+      { name: "Shift down", hint: "the cloud moved down", gen: () => [gauss(), gauss() - 1.8] },
+      { name: "Small shift", hint: "the cloud moved a little to the right", gen: () => [gauss() + 1.3, gauss()] }
     ];
 
     const ASPECT = w => (w < 600 ? 0.85 : 0.45);
@@ -331,7 +328,7 @@
 
     // CUSUM detector on x-mean (both sides), y-mean (both sides), and radius² (up).
     function detector(stream) {
-      const k = 0.5, h = 10, kr = 0.75;
+      const k = 0.5, h = 22, kr = 1.2;
       let xp = 0, xn = 0, yp = 0, yn = 0, rp = 0;
       for (const p of stream) {
         const [x, y] = p.v;
@@ -345,7 +342,7 @@
     }
 
     function makeRound(i) {
-      const change = rand(4, 10), end = change + MISS_AFTER, cfg = ROUNDS[i];
+      const change = rand(3, 12), end = change + MISS_AFTER, cfg = ROUNDS[i];
       const stream = [];
       let t = 0;
       while (t < end) {
@@ -373,7 +370,7 @@
         const after = R.reveal && p.t >= R.change;
         ctx.globalAlpha = 0.25 + 0.75 * (1 - age / FADE);
         ctx.fillStyle = after ? C.fail : C.adapt;
-        ctx.beginPath(); ctx.arc(cx + p.v[0] * sc, cy - p.v[1] * sc, 4.2, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(cx + p.v[0] * sc, cy - p.v[1] * sc, 5, 0, Math.PI * 2); ctx.fill();
       }
       ctx.globalAlpha = 1;
     }
@@ -403,14 +400,18 @@
       R.tap = tapTime; R.reveal = true; R.now = Math.min(R.now, R.end); draw();
       let you, cls;
       if (tapTime === null) { you = "Missed it"; cls = "miss"; }
-      else if (tapTime < R.change) { you = `False alarm (${fmt(R.change - tapTime)} s before the change)`; cls = "false"; }
-      else { you = `${fmt(tapTime - R.change)} s after the change`; cls = "hit"; }
+      else if (tapTime < R.change) { you = "Too early: nothing had changed yet"; cls = "false"; }
+      else {
+        const d = tapTime - R.change, beat = R.det === null || R.det < R.change || d < R.det - R.change;
+        if (d > 4) { you = `Too slow: ${fmt(d)} s (catch it within 4 s)`; cls = "miss"; }
+        else { you = `Caught it in ${fmt(d)} s${beat ? ", faster than the detector!" : ""}`; cls = "hit"; }
+      }
       let det;
       if (R.det === null) det = "Missed it";
       else if (R.det < R.change) det = "False alarm";
       else det = `${fmt(R.det - R.change)} s after the change`;
       G.res.push({ cls, delay: cls === "hit" ? tapTime - R.change : null, det: R.det !== null && R.det >= R.change ? R.det - R.change : null, detFalse: R.det !== null && R.det < R.change });
-      roundBox.querySelector("[data-what]").textContent = `${R.cfg.name}: ${R.cfg.hint}. Red points arrived after the change.`;
+      roundBox.querySelector("[data-what]").textContent = `Round ${G.round + 1}: ${R.cfg.hint}. Red dots arrived after the change.`;
       roundBox.querySelector("[data-you]").textContent = you;
       roundBox.querySelector("[data-you]").className = "v " + cls;
       roundBox.querySelector("[data-det]").textContent = det;
@@ -436,14 +437,14 @@
       const detHits = G.res.filter(r => r.det !== null);
       const det = avg(detHits.map(r => r.det));
       const detFa = G.res.filter(r => r.detFalse).length;
+      const beat = G.res.filter(r => r.cls === "hit" && (r.det === null || r.delay < r.det)).length;
       let verdict;
-      if (hits.length >= 4 && fa === 0 && you !== null && det !== null && you < det) verdict = "You beat the detector. Have you considered a career in drift detection?";
-      else if (fa >= 2) verdict = "Quick on the trigger: more false alarms than a pager on a Friday. Detectors trade speed for false alarms too.";
-      else if (miss >= 2) verdict = "Some shifts slipped past. Subtle changes are exactly why we need statistical monitoring.";
-      else verdict = "Solid monitoring. The detector is fast but blind to context; you are slower but you can tell what changed.";
+      if (hits.length >= 4) verdict = `You win! ${hits.length} of ${ROUNDS.length} shifts caught${beat ? `, and you beat the detector ${beat} time${beat === 1 ? "" : "s"}` : ""}.`;
+      else if (fa >= 2) verdict = "Too quick on the trigger. Wait until the dots really land somewhere new.";
+      else verdict = "Some shifts slipped past. Watch where new dots land compared with the dashed ring.";
       result.querySelector("[data-summary]").innerHTML =
         `<li><span>You</span><b>${hits.length}/${ROUNDS.length} caught</b> · avg delay ${you === null ? "–" : fmt(you) + " s"} · ${fa} false alarm${fa === 1 ? "" : "s"}</li>` +
-        `<li><span>CUSUM detector</span><b>${detHits.length}/${ROUNDS.length} caught</b> · avg delay ${det === null ? "–" : fmt(det) + " s"} · ${detFa} false alarm${detFa === 1 ? "" : "s"}</li>`;
+        `<li><span>Drift detector (CUSUM)</span><b>${detHits.length}/${ROUNDS.length} caught</b> · avg delay ${det === null ? "–" : fmt(det) + " s"} · ${detFa} false alarm${detFa === 1 ? "" : "s"}</li>`;
       result.querySelector("[data-verdict]").textContent = verdict;
       result.hidden = false;
       hudRound.textContent = "Done";

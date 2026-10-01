@@ -6,7 +6,7 @@ One-page website for **The 2nd Workshop on Catch, Adapt, and Operate (CAO): Reli
 
 | File | What it is |
 |---|---|
-| `index.html` | The whole site: about, themes, call for papers, dates, schedule, speakers and panel, organizers and reviewers, taking part, games, CAO 2026 |
+| `index.html` | The whole site: about, themes, call for papers, dates, schedule, speakers and panel, organizers and reviewers, taking part (calls for reviewers and sponsors), games, CAO 2026 |
 | `styles.css` | Styles |
 | `play.js` | The two games: *Keep it running* and *Spot the shift* |
 | `images/people/` | Headshots (see `PHOTO-FILENAMES.txt` for the exact names) |
@@ -19,8 +19,7 @@ Put headshots in `images/people/` with the exact names in `images/people/PHOTO-F
 ## Publishing
 
 Upload everything to the root of the repository (keep the `images/people/` folder). Pages is already set to deploy from `main` / root.
-If an older multi-page version is in the repo, delete `call-for-papers.html`, `dates.html`, `schedule.html`, `speakers.html`, `organizers.html`, `participate.html`, and `play.html`.
 
 ## Contact
 
-caoiclr@gmail.com appears in the footer, the Taking part section, and the reviewer box. Reviewer sign-up goes to the Google Form linked in the reviewer box.
+caoiclr@gmail.com appears in the footer, the Taking part section, and the sponsor call. Reviewer sign-up goes to the Google Form in the Taking part section.
