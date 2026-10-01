@@ -52,7 +52,6 @@
     const FORGET = 0.9;           // fraction of old knowledge that survives each update
     const ACC_GOOD = 0.88;        // above this, nothing is really wrong (an alarm is false)
     const LINE = 0.8;             // the alert line
-    const SAFE_FOR = 3;           // Operate = play it safe for this many seconds, then resume automatically
 
     let S = null, raf = null, last = 0, acc = 0;
     const ASPECT = w => (w < 600 ? 0.62 : 0.42);
@@ -103,9 +102,10 @@
 
     function reset() {
       const world = makeWorld();
-      S = { world, t: 0, know: [{ r: world.A, w: 1 }], obs: [], ema: 0.95, blipAdapts: 0,
-            alarm: false, safe: false, safeUntil: 0, pending: null, events: [],
-            falseAlarms: 0, adapts: 0, missed: 0, safeTime: 0, up: 0, returnAcc: [], done: false };
+      // live: the model is serving users. After Catch it is pulled offline until you press Operate to release it.
+      S = { world, t: 0, know: [{ r: world.A, w: 1 }], obs: [], ema: 0.95,
+            live: true, adapted: false, readyAt: null, pending: null, events: [], offline: [],
+            falseAlarms: 0, adapts: 0, missed: 0, offTime: 0, waitRelease: 0, up: 0, done: false };
     }
     function log(kind, text) { S.events.push({ t: S.t, kind }); if (text) say(text); }
     function say(t) { live.textContent = t; }
@@ -116,19 +116,16 @@
         for (const k of S.know) k.w *= FORGET;
         S.know = S.know.filter(k => k.w > 0.04);
         S.know.push({ r: S.pending.e, w: 1 });
-        S.pending = null;
-        say("Update deployed.");
+        S.pending = null; S.adapted = true; S.readyAt = S.t;
+        say("Updated model ready. Press Operate to release it to users.");
       }
-      if (S.safe && S.t >= S.safeUntil) { S.safe = false; say("Back to normal operation."); }
       const a = trueAcc(S.know, e);
       S.ema += (clamp(a + glitchAt(w, S.t) + gauss() * 0.03, 0.3, 1) - S.ema) * 0.12;
       S.obs.push({ t: S.t, o: S.ema, a });
-      // Score: time the model is reliable (above the line). Operate/safe mode counts half: no errors, but no service.
-      if (S.safe) { S.up += 0.5 * DT; S.safeTime += DT; }
+      // Score: time users are served by a reliable model. Offline time counts half (no mistakes, but users wait).
+      if (!S.live) { S.up += 0.5 * DT; S.offTime += DT; if (S.adapted) S.waitRelease += DT; S.offline[S.offline.length - 1].to = S.t; }
       else if (a >= LINE) S.up += DT;
-      if (a < LINE && !S.alarm && !S.safe && !S.pending) S.missed += DT;
-      const ev = eventAt(w, S.t);
-      if (ev && ev.kind === "return" && S.t >= ev.from + 1) S.returnAcc.push(a);
+      if (S.live && a < LINE) S.missed += DT;
       S.t += DT;
     }
 
@@ -141,21 +138,20 @@
       hudTime.textContent = Math.max(0, Math.ceil(DURATION - S.t)) + " s";
       hudScore.textContent = S.t > 0 ? score() + " / 100" : "– / 100";
       const low = S.obs.length && S.obs[S.obs.length - 1].o < LINE;
-      let st = "All good: keep watching", warn = false;
+      let st = "Live: serving users", warn = false;
       if (S.done) st = "Shift over";
-      else if (S.pending) st = "Retraining…";
-      else if (S.alarm) { st = "Alarm raised: now press Adapt"; warn = true; }
-      else if (S.safe) st = "Playing it safe for a moment…";
+      else if (S.pending) st = "Offline: retraining…";
+      else if (!S.live && S.adapted) { st = "Updated model ready: press Operate to release it"; warn = true; }
+      else if (!S.live) { st = "Offline, users waiting: press Adapt"; warn = true; }
       else if (low) { st = "Below the line: press Catch"; warn = true; }
       hudState.textContent = st;
       hudState.classList.toggle("warn", warn);
-      btnCatch.disabled = S.done || S.alarm || !!S.pending;
-      btnAdapt.disabled = S.done || !S.alarm || !!S.pending;
-      btnOperate.disabled = S.done || S.safe;
-      btnOperate.setAttribute("aria-pressed", S.safe ? "true" : "false");
-      btnOperate.querySelector("span").textContent = S.safe ? `Safe ${Math.max(1, Math.ceil(S.safeUntil - S.t))}s` : "Operate";
-      btnCatch.classList.toggle("nudge", !btnCatch.disabled && !!low && !S.safe);
-      btnAdapt.classList.toggle("nudge", !btnAdapt.disabled);
+      btnCatch.disabled = S.done || !S.live;
+      btnAdapt.disabled = S.done || S.live || !!S.pending;
+      btnOperate.disabled = S.done || S.live || !!S.pending;
+      btnCatch.classList.toggle("nudge", !btnCatch.disabled && !!low);
+      btnAdapt.classList.toggle("nudge", !btnAdapt.disabled && !S.adapted);
+      btnOperate.classList.toggle("nudge", !btnOperate.disabled && S.adapted);
     }
 
     function draw(reveal) {
@@ -167,6 +163,10 @@
       const t0 = reveal ? 0 : t1 - WINDOW;
       const X = t => padL + (t - t0) / (t1 - t0) * W;
       const Y = v => padT + (1 - (v - 0.4) / 0.6) * H;
+      if (S) {   // grey bands: time the model was offline (pulled from users)
+        ctx.fillStyle = "rgba(61,75,163,.08)";
+        for (const o of S.offline) { const x0 = X(Math.max(o.from, t0)), x1 = X(Math.min(o.to, t1)); if (x1 > x0) ctx.fillRect(x0, padT, x1 - x0, H); }
+      }
       ctx.strokeStyle = "#E4E9EE"; ctx.lineWidth = 1; ctx.fillStyle = C.ink2; ctx.font = "12px Schibsted Grotesk, system-ui, sans-serif";
       for (const v of [0.5, 0.7, 0.9]) {
         ctx.beginPath(); ctx.moveTo(padL, Y(v)); ctx.lineTo(w - padR, Y(v)); ctx.stroke();
@@ -190,8 +190,8 @@
         S.obs.forEach((p, i) => { const x = X(p.t), y = Y(clamp(p.a, 0.4, 1)); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
         ctx.stroke(); ctx.setLineDash([]);
       }
-      const mk = { catch: C.catch, adapt: C.adapt, safe: C.operate, false: C.fail };
-      const lab = { catch: "C", adapt: "A", safe: "O", false: "✕" };
+      const mk = { catch: C.catch, adapt: C.adapt, operate: C.operate, false: C.fail };
+      const lab = { catch: "C", adapt: "A", operate: "O", false: "✕" };
       for (const ev of S.events) {
         if (ev.t < t0) continue;
         const x = X(ev.t);
@@ -202,7 +202,7 @@
         ctx.fillText(lab[ev.kind], x, padT + 12.5); ctx.textAlign = "left";
       }
       ctx.fillStyle = C.ink2; ctx.font = "12px Schibsted Grotesk, system-ui, sans-serif";
-      ctx.fillText(reveal ? "Solid: what you saw. Dashed: the model's true accuracy." : "model accuracy: keep it above the line", padL, h - 6);
+      ctx.fillText(reveal ? "Solid: what you saw. Dashed: true accuracy. Blue bands: model offline." : "model accuracy: keep it above the line (blue band = offline)", padL, h - 6);
     }
 
     function loop(now) {
@@ -223,24 +223,24 @@
     }
 
     function doCatch() {
-      if (!S || S.done || S.alarm || S.pending) return;
+      if (!S || S.done || !S.live) return;
       const a = trueAcc(S.know, envAt(S.world, S.t));
-      if (a >= ACC_GOOD) { S.falseAlarms++; log("false", "False alarm: nothing really changed. −2 points."); }
-      else { S.alarm = true; log("catch", "Drift caught. Now press Adapt."); }
+      if (a >= ACC_GOOD) { S.falseAlarms++; log("false", "False alarm: the model was fine. −2 points."); hud(); return; }
+      S.live = false; S.adapted = false; S.offline.push({ from: S.t, to: S.t });
+      log("catch", "Caught. The model is pulled from users. Press Adapt.");
       hud();
     }
     function doAdapt() {
-      if (!S || S.done || !S.alarm || S.pending) return;
-      S.alarm = false; S.adapts++;
-      const ev = eventAt(S.world, S.t); if (ev && ev.kind === "blip" && S.t < ev.from + ev.blip) S.blipAdapts++;
+      if (!S || S.done || S.live || S.pending) return;
+      S.adapts++; S.adapted = false;
       S.pending = { at: S.t + ADAPT_DELAY, e: envAt(S.world, S.t) };
       log("adapt", "Retraining on recent data…");
       hud();
     }
     function doOperate() {
-      if (!S || S.done || S.safe) return;
-      S.safe = true; S.safeUntil = S.t + SAFE_FOR;
-      log("safe", `Playing it safe for ${SAFE_FOR} seconds: no mistakes, but it counts half.`);
+      if (!S || S.done || S.live || S.pending) return;
+      S.live = true; S.adapted = false;
+      log("operate", "Released to users.");
       hud();
     }
 
@@ -250,15 +250,16 @@
       const sc = score();
       const lessons = [];
       if (S.falseAlarms >= 1) lessons.push(`${S.falseAlarms} false alarm${S.falseAlarms > 1 ? "s" : ""}: you pressed Catch when the model was actually fine.`);
-      if (S.missed >= 4) lessons.push(`The model was below the line for ${fmt(S.missed)} s before you caught it.`);
-      if (S.safeTime >= 8) lessons.push(`You played it safe for ${fmt(S.safeTime, 0)} s. No mistakes, but it only counts half.`);
+      if (S.missed >= 4) lessons.push(`Users were served by a model below the line for ${fmt(S.missed)} s.`);
+      if (S.waitRelease >= 3) lessons.push(`Updated models waited ${fmt(S.waitRelease)} s before you released them with Operate.`);
+      if (!S.live) lessons.push("The model was still offline when time ran out.");
       if (S.adapts === 0) lessons.push("You never adapted.");
-      if (!lessons.length) lessons.push("A clean run: you caught the drops, adapted, and kept the model above the line.");
+      if (!lessons.length) lessons.push("A clean run: you caught the drops, adapted, and released the model quickly.");
       const grade = sc >= 85 ? "Reliable operator! You win." : sc >= 70 ? "Nicely done. You win." : sc >= 55 ? "Getting there" : "Rough shift";
       result.querySelector("[data-final]").textContent = sc;
       result.querySelector("[data-grade]").textContent = grade;
       result.querySelector("[data-stats]").innerHTML =
-        `<li><b>${S.adapts}</b> adaptations</li><li><b>${S.falseAlarms}</b> false alarms</li><li><b>${fmt(S.missed)} s</b> below the line, no alarm</li><li><b>${fmt(S.safeTime, 0)} s</b> in safe mode</li>`;
+        `<li><b>${S.adapts}</b> adaptations</li><li><b>${S.falseAlarms}</b> false alarms</li><li><b>${fmt(S.missed)} s</b> serving below the line</li><li><b>${fmt(S.offTime, 0)} s</b> offline</li>`;
       result.querySelector("[data-lessons]").innerHTML = lessons.map(l => `<li>${l}</li>`).join("");
       const share = result.querySelector("[data-share]");
       share.onclick = () => {
@@ -281,7 +282,7 @@
       if (!S || S.done || ev.altKey || ev.ctrlKey || ev.metaKey) return;
       if (/^(INPUT|TEXTAREA|SELECT)$/.test(ev.target.tagName || "")) return;
       const k = ev.key.toLowerCase();
-      if (k === " " || k === "spacebar") { ev.preventDefault(); if (!ev.repeat) (S.alarm ? doAdapt : doCatch)(); }
+      if (k === " " || k === "spacebar") { ev.preventDefault(); if (!ev.repeat) (S.live ? doCatch : (S.adapted ? doOperate : doAdapt))(); }
       else if (k === "c" || k === "1") { ev.preventDefault(); doCatch(); }
       else if (k === "a" || k === "2") { ev.preventDefault(); doAdapt(); }
       else if (k === "o" || k === "3") { ev.preventDefault(); doOperate(); }
