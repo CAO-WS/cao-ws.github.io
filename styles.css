@@ -328,6 +328,13 @@ main > section:first-child{border-top:none;padding-top:28px}
 .callcard p{margin:0}
 .callcard .mailbtn{margin-top:auto}
 @media (max-width:760px){.calls{grid-template-columns:1fr}}
+/* three loop buttons */
+#kir .controls{grid-template-columns:repeat(3,1fr)}
+.ctl.nudge{background:#FFF7E6;box-shadow:inset 0 -4px 0 var(--catch-bright)}
+.ctl.adapt.nudge{background:#E8F4F5;box-shadow:inset 0 -4px 0 var(--adapt)}
+@media (prefers-reduced-motion:no-preference){.ctl.nudge{animation:nudge 1s ease-in-out infinite alternate}}
+@keyframes nudge{to{filter:brightness(.96)}}
+@media (max-width:560px){#kir .controls{grid-template-columns:repeat(3,1fr)}}
 
 /* ---- one-page additions ---- */
 .navlinks a[aria-current="true"]{color:var(--ink);font-weight:700;box-shadow:inset 0 -3px 0 var(--catch-bright)}

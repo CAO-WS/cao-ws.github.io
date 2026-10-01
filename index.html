@@ -259,11 +259,11 @@ document.querySelector("#committee summary").textContent = "Confirmed reviewers 
 <section id="play"><div class="wrap"><h2>Play the CAO loop</h2><p class="intro">Two one-minute games about keeping deployed models reliable. Nothing is recorded.</p></div></section>
 <section id="kir" class="game-sec"><div class="wrap">
   <h2>Keep it running</h2>
-  <p class="intro">You run a model for 45 seconds while the world around it changes. Keep its accuracy above the dashed line.</p>
+  <p class="intro">You run a model for 30 seconds while the world around it changes. Keep its accuracy above the alert line. Your score is the share of time it stays there, out of 100.</p>
   <div class="game" tabindex="-1">
     <div class="hud" aria-label="Game status">
-      <div><span>Time left</span><b data-time>45 s</b></div>
-      <div><span>Reliability score</span><b data-score>–</b></div>
+      <div><span>Time left</span><b data-time>30 s</b></div>
+      <div><span>Score</span><b data-score>– / 100</b></div>
       <div class="hud-state"><span>Status</span><b data-state>Ready when you are</b></div>
     </div>
     <div class="stage">
@@ -271,13 +271,15 @@ document.querySelector("#committee summary").textContent = "Confirmed reviewers 
       <div class="overlay kir-intro">
         <h3>How to play</h3>
         <ul class="howto">
-          <li><b class="k adapt">Space</b><span><strong>Catch &amp; fix</strong> when the line turns red (press Space or tap the button). The model retrains. Don't press on every wiggle: false alarms cost points.</span></li>
-          <li><b class="k operate">S</b><span><strong>Safe mode</strong> pauses the model. No mistakes, but no points either.</span></li>
+          <li><b class="k catch">C</b><span><strong>Catch</strong> when the line turns red. A false alarm costs 2 points.</span></li>
+          <li><b class="k adapt">A</b><span><strong>Adapt</strong> right after a catch: the model retrains on recent data.</span></li>
+          <li><b class="k operate">O</b><span><strong>Operate safely</strong> pauses the model while you sort things out. No mistakes, but it only counts half.</span></li>
         </ul>
+        <p class="tiny">Shortcut: Space presses Catch, then Adapt. On a phone, tap the buttons.</p>
         <button class="btn primary" data-start type="button">Start the shift</button>
       </div>
       <div class="overlay below kir-result" hidden>
-        <div class="final"><b data-final>0</b><span>reliability score</span><em data-grade></em></div>
+        <div class="final"><b data-final>0</b><span>/ 100</span><em data-grade></em></div>
         <ul class="statline" data-stats></ul>
         <h3 class="postmortem">Your postmortem</h3>
         <ul class="lessons" data-lessons></ul>
@@ -289,8 +291,9 @@ document.querySelector("#committee summary").textContent = "Confirmed reviewers 
       </div>
     </div>
     <div class="controls">
-      <button class="ctl adapt big" data-catch type="button"><b>Space</b><span>Catch &amp; fix</span></button>
-      <button class="ctl operate" data-safe type="button" aria-pressed="false"><b>S</b><span>Safe mode</span></button>
+      <button class="ctl catch" data-catch type="button"><b>C</b><span>Catch</span></button>
+      <button class="ctl adapt" data-adapt type="button"><b>A</b><span>Adapt</span></button>
+      <button class="ctl operate" data-operate type="button" aria-pressed="false"><b>O</b><span>Operate safely</span></button>
     </div>
     <p class="sr-only" aria-live="polite" data-live></p>
   </div>
@@ -298,9 +301,9 @@ document.querySelector("#committee summary").textContent = "Confirmed reviewers 
 
 <section id="sts" class="game-sec"><div class="wrap">
   <h2>Spot the shift</h2>
-  <p class="intro">Dots stream in from a deployed system. At some point they start landing somewhere new. Press Shift as soon as you see it, and try to beat the drift detector.</p>
+  <p class="intro">Dots stream in from a deployed system. At some point they start landing somewhere new. Press Shift as soon as you see it, and race a real drift detector running in your browser: it learns what normal looks like with an SVD, then watches a sliding window of the latest dots.</p>
   <div class="game" tabindex="-1">
-    <div class="hud"><div><span>Progress</span><b data-round>5 rounds</b></div><div class="hud-state"><span>Tip</span><b>The dashed ring is where normal data lives</b></div></div>
+    <div class="hud"><div><span>Progress</span><b data-round>5 rounds</b></div><div class="hud-state"><span>Tip</span><b>The dashed ellipse is what the detector learned as normal</b></div></div>
     <div class="stage">
       <canvas aria-label="Stream of data points"></canvas>
       <div class="overlay sts-intro">
@@ -310,7 +313,7 @@ document.querySelector("#committee summary").textContent = "Confirmed reviewers 
       </div>
       <div class="overlay below sts-roundresult" hidden>
         <p class="what" data-what></p>
-        <dl class="vs"><div><dt>You</dt><dd class="v" data-you></dd></div><div><dt>Drift detector</dt><dd class="v" data-det></dd></div></dl>
+        <dl class="vs"><div><dt>You</dt><dd class="v" data-you></dd></div><div><dt>SVD detector</dt><dd class="v" data-det></dd></div></dl>
         <button class="btn primary" data-next type="button"><span>Next round</span></button>
       </div>
       <div class="overlay below sts-result" hidden>
