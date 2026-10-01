@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=8f922bdc">
 </head>
 <body>
 <div class="status" role="note"><div class="wrap"><span><strong>Under preparation for ICLR 2027.</strong> This workshop is being proposed to ICLR 2027. Program, dates, and policies are tentative and will be updated after the acceptance decision.</span></div></div>
@@ -47,29 +47,29 @@
         </g>
         <!-- threshold -->
         <line x1="20" y1="150" x2="980" y2="150" stroke="#B9820C" stroke-width="1.5" stroke-dasharray="6 6" opacity=".7"/>
-        <text x="975" y="144" text-anchor="end" class="note">alert threshold</text>
+        <text x="975" y="144" text-anchor="end" class="note" font-family="Schibsted Grotesk, system-ui, sans-serif" font-size="13" fill="#4A5A6B">alert threshold</text>
         <!-- phase bands -->
         <rect x="370" y="20" width="160" height="200" fill="#B9820C" opacity=".07"/>
         <rect x="530" y="20" width="170" height="200" fill="#1C7684" opacity=".07"/>
         <rect x="700" y="20" width="280" height="200" fill="#3D4BA3" opacity=".06"/>
         <!-- signal -->
-        <path class="line draw" stroke="#172536" d="M20 90 L60 86 L95 94 L130 88 L165 92 L200 85 L235 93 L270 89 L305 97 L340 104 L370 116 L400 128 L430 141 L460 157 L490 166 L530 172 L560 160 L590 138 L620 116 L650 102 L700 92 L740 88 L780 95 L820 89 L860 93 L900 87 L940 92 L980 89"/>
+        <path class="line draw" stroke="#172536" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M20 90 L60 86 L95 94 L130 88 L165 92 L200 85 L235 93 L270 89 L305 97 L340 104 L370 116 L400 128 L430 141 L460 157 L490 166 L530 172 L560 160 L590 138 L620 116 L650 102 L700 92 L740 88 L780 95 L820 89 L860 93 L900 87 L940 92 L980 89"/>
         <!-- markers -->
         <g class="fade" style="animation-delay:1.9s">
           <circle cx="460" cy="157" r="7" fill="#E2A417" stroke="#172536" stroke-width="2"/>
-          <text x="380" y="44" class="lbl" fill="#B9820C">Catch</text>
-          <text x="380" y="62" class="note">drift detected</text>
+          <text x="380" y="44" class="lbl" font-family="Schibsted Grotesk, system-ui, sans-serif" font-size="15" font-weight="600" fill="#B9820C">Catch</text>
+          <text x="380" y="62" class="note" font-family="Schibsted Grotesk, system-ui, sans-serif" font-size="13" fill="#4A5A6B">drift detected</text>
         </g>
         <g class="fade" style="animation-delay:2.5s">
-          <text x="540" y="44" class="lbl" fill="#1C7684">Adapt</text>
-          <text x="540" y="62" class="note">intervene or recover</text>
+          <text x="540" y="44" class="lbl" font-family="Schibsted Grotesk, system-ui, sans-serif" font-size="15" font-weight="600" fill="#1C7684">Adapt</text>
+          <text x="540" y="62" class="note" font-family="Schibsted Grotesk, system-ui, sans-serif" font-size="13" fill="#4A5A6B">intervene or recover</text>
         </g>
         <g class="fade" style="animation-delay:3.1s">
-          <text x="710" y="44" class="lbl" fill="#3D4BA3">Operate</text>
-          <text x="710" y="62" class="note">keep monitoring, catch again</text>
+          <text x="710" y="44" class="lbl" font-family="Schibsted Grotesk, system-ui, sans-serif" font-size="15" font-weight="600" fill="#3D4BA3">Operate</text>
+          <text x="710" y="62" class="note" font-family="Schibsted Grotesk, system-ui, sans-serif" font-size="13" fill="#4A5A6B">keep monitoring, catch again</text>
         </g>
-        <text x="24" y="44" class="note">reliability</text>
-        <text x="24" y="238" class="note">time after deployment</text>
+        <text x="24" y="44" class="note" font-family="Schibsted Grotesk, system-ui, sans-serif" font-size="13" fill="#4A5A6B">reliability</text>
+        <text x="24" y="238" class="note" font-family="Schibsted Grotesk, system-ui, sans-serif" font-size="13" fill="#4A5A6B">time after deployment</text>
       </svg>
         <div class="teaser-cta">
           <button class="btn primary big-play" data-start type="button">▶ Play: keep the model reliable</button>
@@ -102,7 +102,7 @@
   <div class="wrap">
     <h2>About</h2>
     <p class="question">How can AI systems stay reliable after deployment as their data, environments, and behavior change?</p>
-    <p class="intro">The second edition of CAO, after ICLR 2026. New this year: <a href="#setbacks">From Setbacks to Insights</a>.</p>
+    <p class="intro">The second edition of CAO, after ICLR 2026.</p>
   </div>
 </section><section id="themes">
   <div class="wrap">
@@ -246,7 +246,7 @@
     <p style="margin-top:22px;color:#93A3B3">The 2nd Workshop on Catch, Adapt, and Operate (CAO). Proposal under preparation for ICLR 2027; all details are tentative.</p>
   </div>
 </footer>
-<script src="play.js"></script>
+<script src="play.js?v=8f922bdc"></script>
 <script>
 (function () {
   var links = Array.prototype.slice.call(document.querySelectorAll('.navlinks a'));
