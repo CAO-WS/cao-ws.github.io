@@ -8,7 +8,7 @@ One-page website for **The 2nd Workshop on Catch, Adapt, and Operate (CAO): Reli
 |---|---|
 | `index.html` | The whole site: about, themes, call for papers, dates, schedule, speakers and panel, organizers and reviewers, taking part (calls for reviewers and sponsors), games, CAO 2026 |
 | `styles.css` | Styles |
-| `play.js` | The two games: *Keep it running* and *Spot the shift* |
+| `play.js` | The game: *Keep it running* |
 | `images/people/` | Headshots (see `PHOTO-FILENAMES.txt` for the exact names) |
 | `.nojekyll` | Tells GitHub Pages to publish the files as they are |
 

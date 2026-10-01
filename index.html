@@ -191,7 +191,7 @@
   </div>
   <p style="margin-top:22px"><a class="mailbtn" href="mailto:caoiclr@gmail.com"><svg class="env" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="2.5" y="5" width="19" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 6.5l8.5 7 8.5-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span>caoiclr@gmail.com</span></a></p>
 </div></section>
-<section id="play"><div class="wrap"><h2>Play the CAO loop</h2><p class="intro">Two one-minute games. Nothing is recorded.</p></div></section>
+<section id="play"><div class="wrap"><h2>Play the CAO loop</h2><p class="intro">A 30-second game about the CAO loop. Nothing is recorded.</p></div></section>
 <section id="kir" class="game-sec"><div class="wrap">
   <h2>Keep it running</h2>
   <p class="intro">Keep the model above the alert line for 30 seconds.</p>
@@ -234,35 +234,7 @@
   </div>
 </div></section>
 
-<section id="sts" class="game-sec"><div class="wrap">
-  <h2>Spot the shift</h2>
-  <p class="intro">Press Shift when the dots move. Race a live SVD drift detector.</p>
-  <div class="game" tabindex="-1">
-    <div class="hud"><div><span>Progress</span><b data-round>5 rounds</b></div><div class="hud-state"><span>Tip</span><b>The dashed ellipse is what the detector learned as normal</b></div></div>
-    <div class="stage">
-      <canvas aria-label="Stream of data points"></canvas>
-      <div class="overlay sts-intro">
-        <h3>How to play</h3>
-        <p>Five rounds. When the dots move, press <b class="k fail">Space</b> or tap anywhere on the chart within 4 seconds. Catch 4 of 5 to win.</p>
-        <button class="btn primary" data-start type="button">Start watching</button>
-      </div>
-      <div class="overlay below sts-roundresult" hidden>
-        <p class="what" data-what></p>
-        <dl class="vs"><div><dt>You</dt><dd class="v" data-you></dd></div><div><dt>SVD detector</dt><dd class="v" data-det></dd></div></dl>
-        <button class="btn primary" data-next type="button"><span>Next round</span></button>
-      </div>
-      <div class="overlay below sts-result" hidden>
-        <h3>Results</h3>
-        <ul class="vsum" data-summary></ul>
-        <p data-verdict></p>
-        <p class="tiny">Detecting change without labels is the first step of the CAO loop. <a href="#cfp">Working on it? Submit to CAO 2027.</a></p>
-        <button class="btn primary" data-again type="button">Play again</button>
-      </div>
-    </div>
-    <div class="controls one"><button class="ctl fail" data-shift type="button"><b>Space</b><span>Shift!</span></button></div>
-    <p class="sr-only" aria-live="polite" data-live></p>
-  </div>
-</div></section>
+
 <script src="play.js"></script>
 <section id="cao2026">
   <div class="wrap">
