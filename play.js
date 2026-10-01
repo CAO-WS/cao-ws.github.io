@@ -134,7 +134,7 @@
       btnAdapt.disabled = S.done || !S.alarm || !!S.pending;
       btnOperate.disabled = S.done;
       btnOperate.setAttribute("aria-pressed", S.safe ? "true" : "false");
-      btnOperate.querySelector("span").textContent = S.safe ? "Resume" : "Operate safely";
+      btnOperate.querySelector("span").textContent = S.safe ? "Resume" : "Operate";
       btnCatch.classList.toggle("nudge", !btnCatch.disabled && !!low && !S.safe);
       btnAdapt.classList.toggle("nudge", !btnAdapt.disabled);
     }
