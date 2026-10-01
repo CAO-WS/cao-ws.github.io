@@ -404,6 +404,14 @@ main > section:first-child{border-top:none;padding-top:28px}
   .big-play{font-size:.98rem;padding:11px 16px;width:100%}
 }
 
+/* ---- smaller, round portraits ---- */
+.person .photolink{display:block;width:132px;margin:22px 0 0 18px}
+.person .photo{width:132px;aspect-ratio:1/1;border-radius:50%;box-shadow:0 0 0 3px var(--panel),0 0 0 4px var(--rule)}
+.person .photo img{object-position:50% 32%}
+.person .photo .ini{font-size:2.2rem}
+.person .body{padding-top:14px}
+@media (max-width:560px){.person .photolink{width:112px}.person .photo{width:112px}.person .photo .ini{font-size:1.9rem}}
+
 /* ---- one-page additions ---- */
 .navlinks a[aria-current="true"]{color:var(--ink);font-weight:700;box-shadow:inset 0 -3px 0 var(--catch-bright)}
 h3.sub{font-size:1.5rem;font-weight:800;margin:52px 0 10px}
