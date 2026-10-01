@@ -52,6 +52,7 @@
     const FORGET = 0.9;           // fraction of old knowledge that survives each update
     const ACC_GOOD = 0.88;        // above this, nothing is really wrong (an alarm is false)
     const LINE = 0.8;             // the alert line
+    const SAFE_FOR = 3;           // Operate = play it safe for this many seconds, then resume automatically
 
     let S = null, raf = null, last = 0, acc = 0;
     const ASPECT = w => (w < 600 ? 0.62 : 0.42);
@@ -86,7 +87,7 @@
 
     function reset() {
       S = { world: makeWorld(), t: 0, know: [{ r: 0.2, w: 1 }], obs: [], ema: 0.95,
-            alarm: false, safe: false, pending: null, events: [],
+            alarm: false, safe: false, safeUntil: 0, pending: null, events: [],
             falseAlarms: 0, adapts: 0, missed: 0, safeTime: 0, up: 0, returnAcc: [], done: false };
     }
     function log(kind, text) { S.events.push({ t: S.t, kind }); if (text) say(text); }
@@ -101,6 +102,7 @@
         S.pending = null;
         say("Update deployed.");
       }
+      if (S.safe && S.t >= S.safeUntil) { S.safe = false; say("Back to normal operation."); }
       const a = trueAcc(S.know, e);
       const noise = glitchAt(w, S.t) ? 0.06 : 0.03;
       S.ema += (clamp(a + gauss() * noise, 0.3, 1) - S.ema) * 0.12;
@@ -126,15 +128,15 @@
       if (S.done) st = "Shift over";
       else if (S.pending) st = "Retraining…";
       else if (S.alarm) { st = "Alarm raised: now press Adapt"; warn = true; }
-      else if (S.safe) st = "Operating in safe mode: users are waiting";
+      else if (S.safe) st = "Playing it safe for a moment…";
       else if (low) { st = "Below the line: press Catch"; warn = true; }
       hudState.textContent = st;
       hudState.classList.toggle("warn", warn);
       btnCatch.disabled = S.done || S.alarm || !!S.pending;
       btnAdapt.disabled = S.done || !S.alarm || !!S.pending;
-      btnOperate.disabled = S.done;
+      btnOperate.disabled = S.done || S.safe;
       btnOperate.setAttribute("aria-pressed", S.safe ? "true" : "false");
-      btnOperate.querySelector("span").textContent = S.safe ? "Resume" : "Operate";
+      btnOperate.querySelector("span").textContent = S.safe ? `Safe ${Math.max(1, Math.ceil(S.safeUntil - S.t))}s` : "Operate";
       btnCatch.classList.toggle("nudge", !btnCatch.disabled && !!low && !S.safe);
       btnAdapt.classList.toggle("nudge", !btnAdapt.disabled);
     }
@@ -178,8 +180,8 @@
         S.obs.forEach((p, i) => { const x = X(p.t), y = Y(clamp(p.a, 0.4, 1)); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
         ctx.stroke(); ctx.setLineDash([]);
       }
-      const mk = { catch: C.catch, adapt: C.adapt, safe: C.operate, unsafe: C.operate, false: C.fail };
-      const lab = { catch: "C", adapt: "A", safe: "O", unsafe: "O", false: "✕" };
+      const mk = { catch: C.catch, adapt: C.adapt, safe: C.operate, false: C.fail };
+      const lab = { catch: "C", adapt: "A", safe: "O", false: "✕" };
       for (const ev of S.events) {
         if (ev.t < t0) continue;
         const x = X(ev.t);
@@ -225,9 +227,9 @@
       hud();
     }
     function doOperate() {
-      if (!S || S.done) return;
-      S.safe = !S.safe;
-      log(S.safe ? "safe" : "unsafe", S.safe ? "Operating in safe mode: no errors, but users wait." : "Back to normal operation.");
+      if (!S || S.done || S.safe) return;
+      S.safe = true; S.safeUntil = S.t + SAFE_FOR;
+      log("safe", `Playing it safe for ${SAFE_FOR} seconds: no mistakes, but it counts half.`);
       hud();
     }
 
@@ -240,7 +242,7 @@
       if (retAcc < 0.75 && S.adapts > 0) lessons.push(`When the original conditions came back, the model had partly forgotten them. Each update overwrote a little old knowledge: that is catastrophic forgetting.`);
       if (S.falseAlarms >= 1) lessons.push(`${S.falseAlarms} false alarm${S.falseAlarms > 1 ? "s" : ""}: some wiggles were just noise. Telling noise from real drift is the hard part of Catch.`);
       if (S.missed >= 4) lessons.push(`The model was below the line for ${fmt(S.missed)} s without an alarm. Gradual drift is easy to miss.`);
-      if (S.safeTime >= 8) lessons.push(`You operated in safe mode for ${fmt(S.safeTime, 0)} s. No mistakes, but users waited: playing safe is not free.`);
+      if (S.safeTime >= 8) lessons.push(`You played it safe for ${fmt(S.safeTime, 0)} s. No mistakes, but users waited: playing safe is not free.`);
       if (S.adapts === 0) lessons.push("You never adapted. Here the world really did change.");
       if (!lessons.length) lessons.push("A clean run: you caught real drift, adapted quickly, and kept the model reliable. That loop is what CAO is about.");
       const grade = sc >= 85 ? "Reliable operator! You win." : sc >= 75 ? "Nicely done. You win." : sc >= 65 ? "Getting there" : "Rough shift";
