@@ -16,7 +16,7 @@
 <nav class="top" aria-label="Sections">
   <div class="wrap">
     <a class="brand" href="#top">CAO <span>2027</span></a>
-    <div class="navlinks"><a href="#about">About</a><a href="#cfp">Call for papers</a><a href="#dates">Dates</a><a href="#schedule">Schedule</a><a href="#speakers">Speakers</a><a href="#organizers">Organizers</a><a href="#participate">Participate</a><a href="#play">Play</a></div>
+    <div class="navlinks"><a href="#about">About</a><a href="#cfp">Call for papers</a><a href="#dates">Dates</a><a href="#schedule">Schedule</a><a href="#speakers">Speakers</a><a href="#organizers">Organizers</a><a href="#participate">Participate</a></div>
   </div>
 </nav>
 <header class="hero" id="top">
@@ -27,11 +27,19 @@
     <p class="lede">A one-day, in-person workshop proposed for ICLR 2027.</p>
     <div class="ctas">
       <a class="btn primary" href="#cfp">Read the call for papers</a>
-      <a class="btn" href="#dates">See tentative dates</a>
+      <a class="btn" href="#dates">See the dates</a>
     </div>
 
-    <figure class="trace">
-      <svg viewBox="0 0 1000 250" role="img" aria-labelledby="traceTitle">
+    <div id="kir" class="hero-game"><div class="game" tabindex="-1">
+    <div class="hud" aria-label="Game status">
+      <div><span>Time left</span><b data-time>30 s</b></div>
+      <div><span>Score</span><b data-score>– / 100</b></div>
+      <div class="hud-state"><span>Status</span><b data-state>Press Play to try it</b></div>
+    </div>
+    <div class="stage">
+      <canvas aria-label="Live accuracy chart of the deployed model"></canvas>
+      <div class="teaser-layer kir-intro">
+        <svg viewBox="0 0 1000 250" role="img" aria-labelledby="traceTitle">
         <title id="traceTitle">A model's reliability over time: stable, then drifting until the drift is caught, then recovering after adaptation and continuing to operate under monitoring.</title>
         <!-- grid -->
         <g stroke="#E4E9EE" stroke-width="1">
@@ -63,8 +71,30 @@
         <text x="24" y="44" class="note">reliability</text>
         <text x="24" y="238" class="note">time after deployment</text>
       </svg>
-      <figcaption>The CAO loop: notice change, respond, keep watching.</figcaption>
-    </figure>
+        <div class="teaser-cta">
+          <button class="btn primary big-play" data-start type="button">▶ Play: keep the model reliable</button>
+          <span>30 seconds. Catch drops, Adapt the model, Operate to release it.</span>
+        </div>
+      </div>
+      <div class="overlay below kir-result" hidden>
+        <div class="final"><b data-final>0</b><span>/ 100</span><em data-grade></em></div>
+        <ul class="statline" data-stats></ul>
+        <h3 class="postmortem">Your postmortem</h3>
+        <ul class="lessons" data-lessons></ul>
+        <p class="tiny">Turned a setback into an insight? That is what the <a href="#setbacks">From Setbacks to Insights track</a> is for.</p>
+        <div class="row">
+          <button class="btn primary" data-again type="button">Play again</button>
+          <button class="btn" data-share type="button"><span>Copy my score</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="controls">
+      <button class="ctl catch" data-catch type="button"><b>C</b><span>Catch</span></button>
+      <button class="ctl adapt" data-adapt type="button"><b>A</b><span>Adapt</span></button>
+      <button class="ctl operate" data-operate type="button" aria-pressed="false"><b>O</b><span>Operate</span></button>
+    </div>
+    <p class="sr-only" aria-live="polite" data-live></p>
+  </div></div>
   </div>
 </header>
 <main>
@@ -192,53 +222,7 @@
     <div><h3>Awards and support</h3><p>Best Paper, Best Poster, and travel support.</p></div>
   </div>
   <p style="margin-top:22px"><a class="mailbtn" href="mailto:caoiclr@gmail.com"><svg class="env" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="2.5" y="5" width="19" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 6.5l8.5 7 8.5-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span>caoiclr@gmail.com</span></a></p>
-</div></section>
-<section id="play"><div class="wrap"><h2>Play the CAO loop</h2><p class="intro">A 30-second game about the CAO loop. Nothing is recorded.</p></div></section>
-<section id="kir" class="game-sec"><div class="wrap">
-  <h2>Keep it running</h2>
-  <p class="intro">Keep the model above the alert line for 30 seconds.</p>
-  <div class="game" tabindex="-1">
-    <div class="hud" aria-label="Game status">
-      <div><span>Time left</span><b data-time>30 s</b></div>
-      <div><span>Score</span><b data-score>– / 100</b></div>
-      <div class="hud-state"><span>Status</span><b data-state>Ready when you are</b></div>
-    </div>
-    <div class="stage">
-      <canvas aria-label="Live accuracy chart of the deployed model"></canvas>
-      <div class="overlay kir-intro">
-        <h3>How to play</h3>
-        <ul class="howto">
-          <li><b class="k catch">C</b><span><strong>Catch</strong> when the line turns red. The model is pulled from users. A false alarm costs 2 points.</span></li>
-          <li><b class="k adapt">A</b><span><strong>Adapt</strong> retrains it on recent data.</span></li>
-          <li><b class="k operate">O</b><span><strong>Operate</strong> releases it back to users. Until you do, users wait.</span></li>
-        </ul>
-        <p class="tiny">Shortcut: Space does the next step. On a phone, tap the buttons.</p>
-        <button class="btn primary" data-start type="button">Start the shift</button>
-      </div>
-      <div class="overlay below kir-result" hidden>
-        <div class="final"><b data-final>0</b><span>/ 100</span><em data-grade></em></div>
-        <ul class="statline" data-stats></ul>
-        <h3 class="postmortem">Your postmortem</h3>
-        <ul class="lessons" data-lessons></ul>
-        <p class="tiny">Turned a setback into an insight? That is what the <a href="#setbacks">From Setbacks to Insights track</a> is for.</p>
-        <div class="row">
-          <button class="btn primary" data-again type="button">Play again</button>
-          <button class="btn" data-share type="button"><span>Copy my score</span></button>
-        </div>
-      </div>
-    </div>
-    <div class="controls">
-      <button class="ctl catch" data-catch type="button"><b>C</b><span>Catch</span></button>
-      <button class="ctl adapt" data-adapt type="button"><b>A</b><span>Adapt</span></button>
-      <button class="ctl operate" data-operate type="button" aria-pressed="false"><b>O</b><span>Operate</span></button>
-    </div>
-    <p class="sr-only" aria-live="polite" data-live></p>
-  </div>
-</div></section>
-
-
-<script src="play.js"></script>
-<section id="cao2026">
+</div></section><section id="cao2026">
   <div class="wrap">
     <h2>CAO 2026 at ICLR</h2>
     <p class="intro">How our first edition went.</p>
@@ -262,6 +246,7 @@
     <p style="margin-top:22px;color:#93A3B3">The 2nd Workshop on Catch, Adapt, and Operate (CAO). Proposal under preparation for ICLR 2027; all details are tentative.</p>
   </div>
 </footer>
+<script src="play.js"></script>
 <script>
 (function () {
   var links = Array.prototype.slice.call(document.querySelectorAll('.navlinks a'));

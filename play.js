@@ -202,7 +202,9 @@
         ctx.fillText(lab[ev.kind], x, padT + 12.5); ctx.textAlign = "left";
       }
       ctx.fillStyle = C.ink2; ctx.font = "12px Schibsted Grotesk, system-ui, sans-serif";
-      ctx.fillText(reveal ? "Solid: what you saw. Dashed: true accuracy. Blue bands: model offline." : "model accuracy: keep it above the line (blue band = offline)", padL, h - 6);
+      const narrow = w < 560;
+      ctx.fillText(reveal ? (narrow ? "Dashed: true accuracy. Blue: offline." : "Solid: what you saw. Dashed: true accuracy. Blue bands: model offline.")
+                          : (narrow ? "Keep it above the line" : "model accuracy: keep it above the line (blue band = offline)"), padL, h - 6);
     }
 
     function loop(now) {
