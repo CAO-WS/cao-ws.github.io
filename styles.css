@@ -444,11 +444,44 @@ main > section:first-child{border-top:none;padding-top:28px}
 h3.sub{font-size:1.5rem;font-weight:800;margin:52px 0 10px}
 .subtypes li{padding:8px 0;border-bottom:1px solid var(--rule);font-size:1.02rem}
 .subtypes li:last-child{border-bottom:none}
-.shortcards{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:18px}
+.shortcards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:18px}
 .shortcards>div{background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:18px 18px 16px}
 .shortcards h3{margin:0 0 6px;font-size:1.1rem}
 .shortcards p{margin:0;font-size:1rem;line-height:1.5}
 #play{padding-bottom:0}
 .game-sec{border-top:none;padding-top:28px}
-@media (max-width:960px){.shortcards{grid-template-columns:1fr 1fr}}
+@media (max-width:760px){.shortcards{grid-template-columns:1fr}}
 @media (max-width:560px){.shortcards{grid-template-columns:1fr}}
+
+/* calmer type */
+body{font-size:1rem;line-height:1.6}
+h1,h2,h3,h4{letter-spacing:-.005em}
+.hero .edition{font-weight:500;font-size:.95rem}
+.hero h1{font-size:clamp(2.2rem,5.2vw,3.9rem);font-weight:700;letter-spacing:-.02em;line-height:1.05}
+.hero .sub{font-weight:400;font-size:clamp(1.05rem,1.9vw,1.25rem);margin:16px 0 8px}
+.hero .lede{font-size:1rem}
+section h2{font-size:clamp(1.5rem,2.6vw,1.95rem);font-weight:700;letter-spacing:-.015em}
+section h3{font-size:1.1rem;font-weight:600}
+.intro{font-size:1.02rem}
+.question{font-weight:500;font-size:clamp(1.1rem,2vw,1.3rem);border-left-width:3px}
+.pillar h3{font-size:1.3rem;font-weight:700}
+.pillar .tag,.pillar ul,.pillar .q{font-size:.95rem}
+.crosscut{font-size:.95rem}
+.timeline .when{font-size:1.02rem;font-weight:600}
+.timeline .what{font-size:.95rem}
+.stat b{font-size:1.8rem;font-weight:700}
+.stat span{font-size:.9rem}
+.person h4{font-size:1rem;font-weight:600}
+.panel-theme{font-weight:500;font-size:1.1rem}
+.keydates b,.cards3 b{font-size:1.02rem;font-weight:600}
+.btn,.mailbtn{font-weight:500;font-size:.95rem}
+.status{font-weight:400;font-size:.85rem}
+.status strong{font-weight:600}
+.brand{font-weight:700}
+.hud b{font-weight:700;font-size:1.1rem}
+.ctl{font-weight:600;font-size:1rem}
+.overlay h3{font-size:1.15rem}
+.big-play{font-weight:600}
+.shortcards h3{font-size:1rem;font-weight:600}
+.shortcards p{font-size:.95rem}
+footer h2{font-size:1.3rem}
